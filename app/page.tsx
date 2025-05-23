@@ -6,8 +6,11 @@ import { RecentActivity } from "@/components/recent-activity"
 import { ActivityChart } from "@/components/charts/activity-chart"
 import { DeviceBreakdownChart } from "@/components/charts/device-breakdown-chart"
 import { LocationMapChart } from "@/components/charts/location-map-chart"
+import { GetAllQRCode } from "@/services/QRCodeServices"
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const allQrCodes = await GetAllQRCode()
+  console.log("all qr codes", allQrCodes)
   return (
     <div className="flex flex-col gap-4 p-4 md:gap-8 md:p-8">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

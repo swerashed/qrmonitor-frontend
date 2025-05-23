@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { useToast } from "@/components/ui/use-toast"
+import { CreateQRCode } from "@/services/QRCodeServices"
 
 interface CreateQrCodeModalProps {
   open: boolean
@@ -30,7 +31,7 @@ export function CreateQrCodeModal({ open, onOpenChange }: CreateQrCodeModalProps
   const [url, setUrl] = useState("")
   const [trackingEnabled, setTrackingEnabled] = useState(true)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     // Here you would typically save the QR code to your backend
@@ -44,6 +45,16 @@ export function CreateQrCodeModal({ open, onOpenChange }: CreateQrCodeModalProps
     setUrl("")
     setTrackingEnabled(true)
     onOpenChange(false)
+    const description = "This is a test QR code"
+    const qrCodeData = {
+      name,
+      url,
+      trackingEnabled,
+      description
+    }
+    console.log("qr code data", qrCodeData)
+    const qrCodeResponse = await CreateQRCode(qrCodeData)
+    console.log("frontend qr code response", qrCodeResponse)
   }
 
   return (
@@ -83,7 +94,7 @@ export function CreateQrCodeModal({ open, onOpenChange }: CreateQrCodeModalProps
               </div>
               <Switch id="tracking" checked={trackingEnabled} onCheckedChange={setTrackingEnabled} />
             </div>
-            <div className="flex flex-col items-center justify-center rounded-md border border-dashed p-4">
+            {/* <div className="flex flex-col items-center justify-center rounded-md border border-dashed p-4">
               <div className="flex h-40 w-40 items-center justify-center rounded-md bg-muted">
                 {url ? (
                   <div className="flex flex-col items-center gap-2">
@@ -97,7 +108,7 @@ export function CreateQrCodeModal({ open, onOpenChange }: CreateQrCodeModalProps
                   </div>
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
