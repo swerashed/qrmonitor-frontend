@@ -47,7 +47,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="flex flex-col gap-4 py-4">
               <div className="flex items-center gap-2 px-2">
                 <QrCode className="h-6 w-6" />
-                <span className="text-lg font-semibold">DashQR</span>
+                <span className="text-lg font-semibold">QR Platform</span>
               </div>
               <nav className="grid gap-2 px-2">
                 {navigation.map((item) => (
@@ -70,7 +70,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </Sheet>
         <div className="flex items-center gap-2">
           <QrCode className="h-6 w-6" />
-          <span className="text-lg font-semibold hidden md:inline-flex">DashQR</span>
+          <span className="text-lg font-semibold hidden md:inline-flex">QR Platform</span>
         </div>
         <div className="ml-auto flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
