@@ -17,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { useToast } from "@/components/ui/use-toast"
 
 interface CreateQrCodeModalProps {
   open: boolean
@@ -25,7 +24,6 @@ interface CreateQrCodeModalProps {
 }
 
 export function CreateQrCodeModal({ open, onOpenChange }: CreateQrCodeModalProps) {
-  const { toast } = useToast()
   const [name, setName] = useState("")
   const [url, setUrl] = useState("")
   const [trackingEnabled, setTrackingEnabled] = useState(true)
@@ -34,10 +32,10 @@ export function CreateQrCodeModal({ open, onOpenChange }: CreateQrCodeModalProps
     e.preventDefault()
 
     // Here you would typically save the QR code to your backend
-    toast({
-      title: "QR Code Created",
-      description: `Successfully created QR code: ${name}`,
-    })
+    // toast({
+    //   title: "QR Code Created",
+    //   description: `Successfully created QR code: ${name}`,
+    // })
 
     // Reset form and close modal
     setName("")

@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useToast } from "@/components/ui/use-toast"
 import { cn } from "@/lib/utils"
 import { ScansOverTimeChart } from "@/components/charts/scans-over-time-chart"
 import { DeviceBreakdownChart } from "@/components/charts/device-breakdown-chart"
@@ -74,27 +73,26 @@ const qrCode = {
 }
 
 export default function QrCodeDetailsPage({ params }: { params: { id: string } }) {
-  const { toast } = useToast()
   const [isEditing, setIsEditing] = useState(false)
   const [url, setUrl] = useState(qrCode.url)
   const [trackingEnabled, setTrackingEnabled] = useState(qrCode.trackingEnabled)
 
   const handleSave = () => {
     // Here you would typically update the QR code in your backend
-    toast({
-      title: "QR Code Updated",
-      description: "Your changes have been saved successfully.",
-    })
+    // toast({
+    //   title: "QR Code Updated",
+    //   description: "Your changes have been saved successfully.",
+    // })
     setIsEditing(false)
   }
 
   const handleDelete = () => {
     // Here you would typically delete the QR code from your backend
-    toast({
-      title: "QR Code Deleted",
-      description: "The QR code has been deleted successfully.",
-      variant: "destructive",
-    })
+    // toast({
+    //   title: "QR Code Deleted",
+    //   description: "The QR code has been deleted successfully.",
+    //   variant: "destructive",
+    // })
     // Redirect to QR codes list
     window.location.href = "/qr-codes"
   }

@@ -12,33 +12,31 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/components/ui/use-toast"
 
 export default function SettingsPage() {
-  const { toast } = useToast()
   const [apiKey, setApiKey] = useState("CLEANED")
 
   const copyApiKey = () => {
     navigator.clipboard.writeText(apiKey)
-    toast({
-      title: "API Key Copied",
-      description: "Your API key has been copied to the clipboard.",
-    })
+    // toast({
+    //   title: "API Key Copied",
+    //   description: "Your API key has been copied to the clipboard.",
+    // })
   }
 
   const regenerateApiKey = () => {
     setApiKey("sk_live_" + Math.random().toString(36).substring(2, 15))
-    toast({
-      title: "API Key Regenerated",
-      description: "Your API key has been regenerated successfully.",
-    })
+    // toast({
+    //   title: "API Key Regenerated",
+    //   description: "Your API key has been regenerated successfully.",
+    // })
   }
 
   const saveSettings = () => {
-    toast({
-      title: "Settings Saved",
-      description: "Your settings have been saved successfully.",
-    })
+    // toast({
+    //   title: "Settings Saved",
+    //   description: "Your settings have been saved successfully.",
+    // })
   }
 
   return (

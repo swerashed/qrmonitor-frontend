@@ -1,10 +1,8 @@
 "use client"
-
 import type React from "react"
-
 import { useState } from "react"
 import { usePathname } from "next/navigation"
-import { BarChart3, Home, LogOut, QrCode, Settings, User, Moon, Sun, Menu } from "lucide-react"
+import { BarChart3, LogOut, QrCode, Settings, User, Moon, Sun, Menu, LayoutDashboardIcon } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -19,13 +17,14 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useTheme } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
+import { handleClientLogout } from "@/hooks/handleClientLogout"
 
 const navigation = [
-  { name: "Dashboard", href: "/", icon: Home },
-  { name: "QR Codes", href: "/qr-codes", icon: QrCode },
-  { name: "Analytics", href: "/analytics", icon: BarChart3 },
-  { name: "Settings", href: "/settings", icon: Settings },
-  { name: "Account", href: "/account", icon: User },
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboardIcon },
+  { name: "QR Codes", href: "/dashboard/qr-codes", icon: QrCode },
+  { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
+  { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Account", href: "/dashboard/account", icon: User },
 ]
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
@@ -90,15 +89,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <a href="/account">Profile</a>
+                <a href="/dashboard/account">Profile</a>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <a href="/settings">Settings</a>
+                <a href="/dashboard/settings">Settings</a>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
+              <DropdownMenuItem className="flex justify-center items-center">
+                <button  className="flex justify-center items-center"  onClick={handleClientLogout}> <LogOut className="mr-2 h-4 w-4 " />
+                <span>Log out</span></button>
+               
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
