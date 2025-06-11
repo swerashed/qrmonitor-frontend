@@ -1,6 +1,6 @@
 "use client"
 import type React from "react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
 import { BarChart3, LogOut, QrCode, Settings, User, Moon, Sun, Menu, LayoutDashboardIcon } from "lucide-react"
 
@@ -18,6 +18,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useTheme } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 import { handleClientLogout } from "@/hooks/handleClientLogout"
+import { getActiveUserClient } from "@/hooks/getActiveUserClient"
+import { getUserAvatarFallbackLetters } from "@/helpers/getUserAvatarFallback"
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboardIcon },
@@ -31,6 +33,21 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const { setTheme, theme } = useTheme()
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
+  const [activeUser, setActiveUser] = useState({})
+  
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userdata = await getActiveUserClient();
+        setActiveUser(userdata || {});
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    };
+  
+    fetchUser();
+  }, []); 
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -81,7 +98,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src="/placeholder-user.jpg" alt="User" />
-                  <AvatarFallback>JD</AvatarFallback>
+                  <AvatarFallback>{getUserAvatarFallbackLetters(activeUser)}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>

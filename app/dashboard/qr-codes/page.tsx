@@ -1,9 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { format } from "date-fns"
 import { Download, Edit, Filter, MoreHorizontal, Plus, QrCode, Search, Trash2 } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
@@ -20,62 +19,101 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { CreateQrCodeModal } from "@/components/create-qr-code-modal"
 import { cn } from "@/lib/utils"
+import { deleteQrCode, GetAllQRCode } from "@/services/QRCodeServices"
+import QRCodeStyling from "qr-code-styling"
+import ClientQR from "@/components/qr-code-creator"
+import { toast } from "sonner"
 
-// Sample QR code data
-const qrCodes = [
-  {
-    id: "1",
-    name: "Product Landing Page",
-    url: "https://example.com/product",
-    scans: 423,
-    lastScanned: new Date(2023, 4, 15),
-    createdAt: new Date(2023, 3, 10),
-    trackingEnabled: true,
-  },
-  {
-    id: "2",
-    name: "Event Registration",
-    url: "https://example.com/event",
-    scans: 352,
-    lastScanned: new Date(2023, 4, 14),
-    createdAt: new Date(2023, 3, 15),
-    trackingEnabled: true,
-  },
-  {
-    id: "3",
-    name: "Promotional Offer",
-    url: "https://example.com/promo",
-    scans: 289,
-    lastScanned: new Date(2023, 4, 13),
-    createdAt: new Date(2023, 3, 20),
-    trackingEnabled: true,
-  },
-  {
-    id: "4",
-    name: "Contact Information",
-    url: "https://example.com/contact",
-    scans: 187,
-    lastScanned: new Date(2023, 4, 12),
-    createdAt: new Date(2023, 3, 25),
-    trackingEnabled: false,
-  },
-  {
-    id: "5",
-    name: "Digital Menu",
-    url: "https://example.com/menu",
-    scans: 156,
-    lastScanned: new Date(2023, 4, 11),
-    createdAt: new Date(2023, 3, 30),
-    trackingEnabled: true,
-  },
-]
+export interface QRCode {
+  id: string;
+  name: string;
+  description: string | null;
+  settings: Record<string, unknown> | null;
+  totalEdits: number;
+  targetUrl: string;
+  totalScans: number;
+  uniqueScans: number;
+  lastScans: Date | null;
+  trackingEnabled: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  creatorId: string;
+}
 
 export default function QrCodesPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [date, setDate] = useState<Date>()
   const [searchQuery, setSearchQuery] = useState("")
+  const [qrCodes, setQrCodes] = useState<QRCode[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  const filteredQrCodes = qrCodes.filter((qr) => qr.name.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredQrCodes = qrCodes?.filter((qr) => 
+    qr?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase())
+  )
+
+  const getAllQRCodeData = async () => {
+    setIsLoading(true)
+    try {
+      const response = await GetAllQRCode()
+      setQrCodes(response.data || [])
+    } catch (err) {
+      console.error("Failed to fetch QR codes:", err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    getAllQRCodeData()
+  }, [])
+
+
+  const handleDownload = (qr:any)=> {
+    const qrCode = new QRCodeStyling(qr.settings)
+    qrCode.download({
+      extension: "png"
+    });
+  }
+
+  const handleDeleteQr = async (id:string) => {
+    try {
+      const response = await deleteQrCode(id)
+      if (response.success) {
+        toast("Delete successful", {
+          description: "Your QR code has been created successfully.",
+        })
+
+
+      } else {
+        toast("Delete failed!", {
+          description: "Failed to delete your QR code!",
+        })
+      }
+    } catch (err) {
+      toast("Delete failed!", {
+        description: "Failed to delete your QR code!",
+      })
+    }
+  }
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-4 p-4 md:gap-8 md:p-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">QR Codes</h1>
+            <p className="text-muted-foreground">Loading your QR codes...</p>
+          </div>
+          <Button disabled>
+            <Plus className="mr-2 h-4 w-4" />
+            Create QR Code
+          </Button>
+        </div>
+        <Card className="flex items-center justify-center h-64">
+          <p className="text-muted-foreground">Loading...</p>
+        </Card>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-4 p-4 md:gap-8 md:p-8">
@@ -142,73 +180,98 @@ export default function QrCodesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredQrCodes.map((qr) => (
-                <TableRow key={qr.id}>
-                  <TableCell>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-md border">
-                      <QrCode className="h-8 w-8 text-muted-foreground" />
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-medium">
-                    <a href={`/qr-codes/${qr.id}`} className="hover:underline">
-                      {qr.name}
-                    </a>
-                  </TableCell>
-                  <TableCell className="max-w-[200px] truncate">
-                    <a
-                      href={qr.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-muted-foreground hover:underline"
-                    >
-                      {qr.url}
-                    </a>
-                  </TableCell>
-                  <TableCell className="text-right">{qr.scans.toLocaleString()}</TableCell>
-                  <TableCell>{format(qr.lastScanned, "MMM d, yyyy")}</TableCell>
-                  <TableCell>{format(qr.createdAt, "MMM d, yyyy")}</TableCell>
-                  <TableCell>
-                    <span
-                      className={cn(
-                        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-                        qr.trackingEnabled
-                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                          : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
-                      )}
-                    >
-                      {qr.trackingEnabled ? "Enabled" : "Disabled"}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Actions</span>
+              {filteredQrCodes.length > 0 ? (
+                filteredQrCodes.map((qr) => (
+                  <TableRow key={qr.id}>
+                    <TableCell>
+                      <div className="flex h-12 w-12 items-center justify-center rounded-md border">
+                      <ClientQR width={48} height={48} qrCodeOption={qr?.settings}/>
+                      </div>
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      <a href={`/dashboard/qr-codes/${qr.id}`} className="hover:underline">
+                        {qr.name}
+                      </a>
+                    </TableCell>
+                    <TableCell className="max-w-[200px] truncate">
+                      <a
+                        href={qr.targetUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:underline"
+                      >
+                        {qr.targetUrl}
+                      </a>
+                    </TableCell>
+                    <TableCell className="text-right">{qr.totalScans}</TableCell>
+                    <TableCell>{ qr?.lastScans ? format(new Date(qr?.lastScans), "MMM d, yyyy") : "Not yet scanned"}</TableCell>
+                    <TableCell>{format(new Date(qr.createdAt), "MMM d, yyyy")}</TableCell>
+                    <TableCell>
+                      <span
+                        className={cn(
+                          "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
+                          qr.trackingEnabled
+                            ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                            : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
+                        )}
+                      >
+                        {qr.trackingEnabled ? "Enabled" : "Disabled"}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Actions</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuItem asChild>
+                            <a href={`/dashboard/qr-codes/${qr.id}`}>
+                              <Edit className="mr-2 h-4 w-4" />
+                              Edit
+                            </a>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={()=>{
+                            handleDownload(qr)
+                          }}>
+                            <Download className="mr-2 h-4 w-4" />
+                            Download
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={()=>{
+                            handleDeleteQr(qr.id)
+                          }} className="text-destructive focus:text-destructive">
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={8} className="h-24 text-center">
+                    {searchQuery ? (
+                      "No QR codes match your search"
+                    ) : (
+                      <div className="flex flex-col items-center gap-2">
+                        <p>You have not created any QR codes yet</p>
+                        <Button
+                          size="sm"
+                          onClick={() => setIsCreateModalOpen(true)}
+                        >
+                          <Plus className="mr-2 h-4 w-4" />
+                          Create Your First QR Code
                         </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem asChild>
-                          <a href={`/qr-codes/${qr.id}`}>
-                            <Edit className="mr-2 h-4 w-4" />
-                            Edit
-                          </a>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Download className="mr-2 h-4 w-4" />
-                          Download
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive focus:text-destructive">
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                      </div>
+                    )}
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </CardContent>

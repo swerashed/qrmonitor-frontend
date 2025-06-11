@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast } from "sonner"
-import { signInUser } from "@/services/AuthServices" 
+import { signInUser, signUpUser } from "@/services/AuthServices"
 import { useRouter } from "next/navigation"
 
 // Define the login form schema with Zod
@@ -43,6 +43,12 @@ export function AuthForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState<"login" | "signup">("login")
   const router = useRouter()
+
+  // Handle tab change
+  const handleTabChange = (value: string) => {
+    setActiveTab(value as "login" | "signup")
+  }
+
   // Initialize React Hook Form for login
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -70,7 +76,7 @@ export function AuthForm() {
     try {
       const loginResponse = await signInUser(data)
       if (loginResponse.success) {
-        toast( loginResponse.message || "Login successful",{
+        toast(loginResponse.message || "Login successful", {
           description: "You have been logged in successfully.",
         })
         router.push("/dashboard")
@@ -80,7 +86,7 @@ export function AuthForm() {
         })
       }
     } catch (error) {
-      toast("Login failed",{
+      toast("Login failed", {
         description: "Something went wrong. Please try again.",
       })
     } finally {
@@ -93,15 +99,23 @@ export function AuthForm() {
     setIsLoading(true)
 
     try {
-      // Simulate API call with a timeout
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const signUpResponse = await signUpUser(data)
+      if (signUpResponse.success) {
+        // Simulate successful signup
+        toast("Signup successful", {
+          description: "Your account has been created successfully.",
+        })
 
-      // Simulate successful signup
-      toast("Signup successful",{
-        description: "Your account has been created successfully.",
-      })
+        handleTabChange("login")
+      } else {
+        toast(signUpResponse.message || "Signup failed", {
+          description: "Please try again.",
+        })
+      }
+
+
     } catch (error) {
-      toast("Account Creation Failed!",{
+      toast("Account Creation Failed!", {
         description: "An error occurred. Please try again.",
       })
     } finally {
@@ -109,11 +123,6 @@ export function AuthForm() {
     }
   }
 
-
-  // Handle tab change
-  const handleTabChange = (value: string) => {
-    setActiveTab(value as "login" | "signup")
-  }
 
   return (
     <Card className="w-full">

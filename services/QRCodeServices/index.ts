@@ -1,15 +1,13 @@
 "use server"
+import { FormatErrorResponse } from '@/helpers/FormatErrorResponse';
+import { getActiveUser } from '@/hooks/getActiveUser';
+import app_axios from '@/lib/axios';
 import axios from 'axios';
-interface QRCodeData {
-  name: string
-  url: string
-  trackingEnabled: boolean
-  description: string
-}
+
 interface QRCodeScanData {
   slug: string
 }
-export const CreateQRCode = async (data: QRCodeData) => {
+export const CreateQRCode = async (data: any) => {
 
   if (!data) {
     return {
@@ -17,26 +15,55 @@ export const CreateQRCode = async (data: QRCodeData) => {
       message: "No data provided"
     }
   }
-  const { name, url, trackingEnabled, description } = data
-  const staticQRData = {
-    name,
-    link: url,
-    // trackingEnabled,
-    description
-  }
-
-  console.log("staticQRData", staticQRData)
-  const response = await axios.post(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/qrcode`,
-    staticQRData)
-
-
-  return {
-    success: true,
-    message: "QR code created successfully",
-    data: response.data
+  try {
+    const activeUserResponse = await getActiveUser()
+    if('statusCode' in activeUserResponse || !activeUserResponse?.userId) return
+    const finalQRData = {
+      ...data,
+      creatorId: activeUserResponse?.userId as string
+    }
+  
+    const response = await app_axios.post(`/qr-code/create-qr`,
+      finalQRData)
+    return response.data
+  } catch (error) {
+    return FormatErrorResponse(error)
   }
 }
+
+
+export const editQRCode = async (data: any) => {
+  if (!data) {
+    return {
+      success: false,
+      message: "No data provided"
+    };
+  }
+
+  const { id } = data;
+
+  console.log("update qr data", data)
+  if (!id) {
+    return {
+      success: false,
+      message: "QR Code ID is required for editing"
+    };
+  }
+
+  const updateData = data;
+
+  try {
+    const response = await app_axios.patch(`/qr-code/update-qr/${id}`,
+      updateData
+    );
+
+    return response.data;
+  } catch (error) {
+    return FormatErrorResponse(error)
+  }
+};
+
+
 export const ScanQRCode = async (data: QRCodeScanData) => {
 
   if (!data) {
@@ -47,7 +74,6 @@ export const ScanQRCode = async (data: QRCodeScanData) => {
   }
   const { slug } = data
   const hitUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/qrcode/scan/${slug}`
-  console.log("hitUrl", hitUrl)
 
   const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/qrcode/scan/${slug}`)
 
@@ -59,15 +85,41 @@ export const ScanQRCode = async (data: QRCodeScanData) => {
   }
 }
 
-export const GetAllQRCode = async () => {
-
-  const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/qrcode`
-  )
-  return {
-    success: true,
-    message: "QR code retrieved successfully",
-    data: response.data
+export const GetSingleQRCode = async (id: string) => {
+  if (!id) {
+    return {
+      success: false,
+      message: "No id provided"
+    }
   }
 
+  const response = await app_axios.get(`/qr-code/get-single-qr/${id}`)
+  return {
+    success: true,
+    message: "QR code fetched successfully",
+    data: response.data
+  }
 }
+
+
+
+export const deleteQrCode = async (id: string) => {
+  if (!id) {
+    return {
+      success: false,
+      message: "No id provided"
+    }
+  }
+
+  const response = await app_axios.delete(`/qr-code/delete/${id}`)
+  return response.data
+}
+
+
+
+export const GetAllQRCode = async () => {
+  const response = await app_axios.get(`/qr-code/get-all-qr`)
+  return response.data
+
+}
+

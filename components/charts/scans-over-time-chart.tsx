@@ -35,12 +35,14 @@ const generateScansData = () => {
 
 const scansData = generateScansData()
 
-export function ScansOverTimeChart() {
+export function ScansOverTimeChart({data}:any) {
+
+
   return (
     <div className="h-[200px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
-          data={scansData}
+          data={data}
           margin={{
             top: 5,
             right: 10,
