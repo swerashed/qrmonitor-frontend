@@ -38,50 +38,9 @@ import { TimeOfDayChart } from "@/components/charts/time-of-day-chart";
 import { useParams } from "next/navigation";
 import { deleteQrCode, editQRCode, GetSingleQRCode } from "@/services/QRCodeServices";
 import ClientQR from "@/components/qr-code-creator";
-import QRCodeStyling from "qr-code-styling";
 import { handleQRDownload } from "@/helpers/handleQRDownload";
 import { toast } from "sonner";
-
-// Define types
-interface QRCodeData {
-  id: string;
-  name: string;
-  description?: string;
-  targetUrl: string;
-  totalScans: number;
-  uniqueScans: number;
-  lastScans: string | Date;
-  createdAt: string | Date;
-  trackingEnabled: boolean;
-  settings: any
-}
-
-interface ScanByDevice {
-  device: string;
-  count: number;
-  percentage: number;
-}
-
-interface ScanByLocation {
-  country: string;
-  count: number;
-  percentage: number;
-}
-
-interface RecentScan {
-  id: string;
-  location: string;
-  device: string;
-  timestamp: string | Date;
-}
-interface ScanOverTime {
-  scans: number;
-  hour: string | Date;
-}
-interface ScanOverDay {
-  scans: number;
-  date: string | Date;
-}
+import { QRCodeData, RecentScan, ScanByDevice, ScanByLocation, ScanOverDay, ScanOverTime } from "@/interfaces";
 
 export default function QrCodeDetailsPage() {
   const params = useParams();

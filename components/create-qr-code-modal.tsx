@@ -16,11 +16,9 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { CreateQRCode } from "@/services/QRCodeServices"
 import ClientQR from "./qr-code-creator"
+import { CreateQrCodeModalProps } from "@/interfaces"
 
-interface CreateQrCodeModalProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-}
+
 
 export function CreateQrCodeModal({ open, onOpenChange }: CreateQrCodeModalProps) {
   const [name, setName] = useState("")

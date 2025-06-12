@@ -24,7 +24,7 @@ import QRCodeStyling from "qr-code-styling"
 import ClientQR from "@/components/qr-code-creator"
 import { toast } from "sonner"
 
-export interface QRCode {
+interface QRCode {
   id: string;
   name: string;
   description: string | null;

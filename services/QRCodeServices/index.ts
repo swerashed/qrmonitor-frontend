@@ -42,7 +42,6 @@ export const editQRCode = async (data: any) => {
 
   const { id } = data;
 
-  console.log("update qr data", data)
   if (!id) {
     return {
       success: false,
@@ -64,24 +63,38 @@ export const editQRCode = async (data: any) => {
 };
 
 
-export const ScanQRCode = async (data: QRCodeScanData) => {
+export const scanQRCode = async (data: any) => {
 
   if (!data) {
     return {
       success: false,
       message: "No data provided"
-    }
+    };
   }
-  const { slug } = data
-  const hitUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/qrcode/scan/${slug}`
 
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/qrcode/scan/${slug}`)
+  const { fingerprint, qrId } = data;
+
+  if (!qrId) {
+    return {
+      success: false,
+      message: "QR Id is required for tracking"
+    };
+  }
+  if (!fingerprint) {
+    return {
+      success: false,
+      message: "fingerprint is required for tracking"
+    };
+  }
 
 
-  return {
-    success: true,
-    message: "QR code scanned successfully",
-    data: response.data
+  try {
+    const response = await app_axios.post(`qr-code/track-scan`,{qrId, fingerprint}
+    );
+
+    return response.data;
+  } catch (error) {
+    return FormatErrorResponse(error)
   }
 }
 
@@ -102,7 +115,6 @@ export const GetSingleQRCode = async (id: string) => {
 }
 
 
-
 export const deleteQrCode = async (id: string) => {
   if (!id) {
     return {
@@ -115,6 +127,11 @@ export const deleteQrCode = async (id: string) => {
   return response.data
 }
 
+
+export const getDashboardStats = async () => {
+  const response = await app_axios.get(`/qr-code/dashboard/stats`)
+  return response.data
+}
 
 
 export const GetAllQRCode = async () => {

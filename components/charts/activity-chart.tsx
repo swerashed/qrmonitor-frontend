@@ -1,42 +1,11 @@
 "use client"
 
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartTooltip } from "@/components/ui/chart"
 
-// Sample data for the last 30 days
-const generateActivityData = () => {
-  const data = []
-  const now = new Date()
 
-  for (let i = 29; i >= 0; i--) {
-    const date = new Date(now)
-    date.setDate(date.getDate() - i)
-
-    // Generate random scan count with some patterns
-    let scans = Math.floor(Math.random() * 30) + 20
-
-    // Add some patterns - weekends have more scans
-    if (date.getDay() === 0 || date.getDay() === 6) {
-      scans += Math.floor(Math.random() * 20) + 10
-    }
-
-    // Add a trend - increasing over time
-    scans += Math.floor(i / 3)
-
-    data.push({
-      date: date.toISOString().split("T")[0],
-      scans,
-    })
-  }
-
-  return data
-}
-
-const activityData = generateActivityData()
-
-export function ActivityChart() {
+export function ActivityChart({data}:any) {
   return (
     <Card>
       <CardHeader>
@@ -47,7 +16,7 @@ export function ActivityChart() {
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
-              data={activityData}
+              data={data}
               margin={{
                 top: 5,
                 right: 10,

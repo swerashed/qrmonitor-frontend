@@ -4,36 +4,6 @@ import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "rec
 
 import { ChartTooltip } from "@/components/ui/chart"
 
-// Generate sample data for the last 14 days
-const generateScansData = () => {
-  const data = []
-  const now = new Date()
-
-  for (let i = 13; i >= 0; i--) {
-    const date = new Date(now)
-    date.setDate(date.getDate() - i)
-
-    // Generate random scan count with some patterns
-    let scans = Math.floor(Math.random() * 20) + 10
-
-    // Add some patterns - weekends have more scans
-    if (date.getDay() === 0 || date.getDay() === 6) {
-      scans += Math.floor(Math.random() * 10) + 5
-    }
-
-    // Add a trend - increasing over time
-    scans += Math.floor(i / 2)
-
-    data.push({
-      date: date.toISOString().split("T")[0],
-      scans,
-    })
-  }
-
-  return data
-}
-
-const scansData = generateScansData()
 
 export function ScansOverTimeChart({data}:any) {
 

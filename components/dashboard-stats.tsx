@@ -1,12 +1,7 @@
 import type React from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { DashboardStatsProps } from "@/interfaces"
 
-interface DashboardStatsProps {
-  title: string
-  value: string
-  description: string
-  icon: React.ReactNode
-}
 
 export function DashboardStats({ title, value, description, icon }: DashboardStatsProps) {
   return (

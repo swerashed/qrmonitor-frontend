@@ -1,6 +1,6 @@
 "use client"
 
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 import { ChartTooltip } from "@/components/ui/chart"
 
 interface LocationData {
@@ -13,6 +13,23 @@ export function LocationMapChart({ data }: { data: LocationData[] }) {
     return (
       <div className="h-[200px] w-full flex items-center justify-center text-sm text-muted-foreground">
         No location data available
+      </div>
+    )
+  }
+
+  const renderLegend = (props: any) => {
+    const { payload } = props
+    return (
+      <div className="mt-6 flex justify-center gap-4 flex-wrap text-xs text-muted-foreground uppercase">
+        {payload.map((entry: any, index: number) => (
+          <div key={`legend-${index}`} className="flex items-center gap-2">
+            <span
+              className="h-2 w-2 rounded-full inline-block"
+              style={{ backgroundColor: entry.color }}
+            />
+            <span>{entry.value}</span>
+          </div>
+        ))}
       </div>
     )
   }
@@ -75,6 +92,11 @@ export function LocationMapChart({ data }: { data: LocationData[] }) {
               return null
             }}
           />
+
+          <Legend
+            content={renderLegend}
+          />
+
         </PieChart>
       </ResponsiveContainer>
     </div>

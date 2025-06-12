@@ -1,6 +1,6 @@
 "use client"
 
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 import { ChartTooltip } from "@/components/ui/chart"
 import { useEffect, useState } from "react"
 
@@ -42,6 +42,22 @@ export function DeviceBreakdownChart({ data }: { data: DeviceData[] }) {
     )
   }
 
+  const renderLegend = (props: any) => {
+    const { payload } = props
+    return (
+      <div className="mt-6 flex justify-center gap-4 flex-wrap text-xs text-muted-foreground uppercase">
+        {payload.map((entry: any, index: number) => (
+          <div key={`legend-${index}`} className="flex items-center gap-2">
+            <span
+              className="h-2 w-2 rounded-full inline-block"
+              style={{ backgroundColor: entry.color }}
+            />
+            <span>{entry.value}</span>
+          </div>
+        ))}
+      </div>
+    )
+  }
   return (
     <div className="h-[200px] w-full">
       <ResponsiveContainer width="100%" height="100%">
@@ -83,6 +99,12 @@ export function DeviceBreakdownChart({ data }: { data: DeviceData[] }) {
               return null
             }}
           />
+      
+            <Legend
+            content={renderLegend}
+            />
+ 
+
         </PieChart>
       </ResponsiveContainer>
     </div>
