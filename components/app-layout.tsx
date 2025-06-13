@@ -15,11 +15,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { useTheme } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 import { handleClientLogout } from "@/hooks/handleClientLogout"
 import { getActiveUserClient } from "@/hooks/getActiveUserClient"
 import { getUserAvatarFallbackLetters } from "@/helpers/getUserAvatarFallback"
+import { useTheme } from "next-themes"
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboardIcon },

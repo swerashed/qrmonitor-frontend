@@ -1,11 +1,19 @@
 "use client"
 
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
 import { ChartTooltip } from "@/components/ui/chart"
 
 
 export function TimeOfDayChart({data}:any) {
+  const renderLegend = () => (
+    <div className="mt-4 flex justify-center text-xs text-muted-foreground uppercase">
+      <div className="flex items-center gap-2">
+        <span className="h-2 w-2 rounded-full bg-primary inline-block" />
+        <span>Scans On Last 24 Hours</span>
+      </div>
+    </div>
+  )
   return (
     <div className="h-[200px] w-full">
       <ResponsiveContainer width="100%" height="100%">
@@ -15,7 +23,7 @@ export function TimeOfDayChart({data}:any) {
             top: 5,
             right: 10,
             left: 10,
-            bottom: 0,
+            bottom: 20,
           }}
         >
           <XAxis
@@ -56,6 +64,8 @@ export function TimeOfDayChart({data}:any) {
             }}
           />
           <Line type="monotone" dataKey="scans" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
+
+          <Legend content={renderLegend} />
         </LineChart>
       </ResponsiveContainer>
     </div>

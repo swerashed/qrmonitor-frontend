@@ -4,20 +4,13 @@ import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recha
 
 import { ChartTooltip } from "@/components/ui/chart"
 
-const topQrCodesData = [
-  { name: "Product Landing", scans: 423 },
-  { name: "Event Registration", scans: 352 },
-  { name: "Promotional Offer", scans: 289 },
-  { name: "Contact Info", scans: 187 },
-  { name: "Digital Menu", scans: 156 },
-]
 
-export function TopQrCodesChart() {
+export function TopQrCodesChart({data}:any) {
   return (
     <div className="h-[300px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
-          data={topQrCodesData}
+          data={data}
           layout="vertical"
           margin={{
             top: 5,
@@ -45,7 +38,7 @@ export function TopQrCodesChart() {
                       <p className="text-sm font-medium">{payload[0].payload.name}</p>
                       <div className="flex items-center gap-2">
                         <div className="h-2 w-2 rounded-full bg-primary" />
-                        <p className="text-sm">{payload[0].value} scans</p>
+                        <p className="text-sm">{payload[0].payload.totalScans} scans</p>
                       </div>
                     </div>
                   </ChartTooltip>
@@ -55,7 +48,8 @@ export function TopQrCodesChart() {
               return null
             }}
           />
-          <Bar dataKey="scans" fill="hsl(var(--primary))" radius={[4, 4, 4, 4]} barSize={20} />
+         <Bar dataKey="totalScans" fill="hsl(var(--primary))" radius={[4, 4, 4, 4]} barSize={20} />
+
         </BarChart>
       </ResponsiveContainer>
     </div>

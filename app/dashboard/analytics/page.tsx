@@ -1,13 +1,6 @@
-"use client"
-
-import { useState } from "react"
-import { format } from "date-fns"
-import { BarChart3, CalendarIcon, Filter, Globe, Laptop, Smartphone, Tablet } from "lucide-react"
-
+import { BarChart3, Filter, Globe, Laptop, Smartphone, Tablet } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ActivityChart } from "@/components/charts/activity-chart"
@@ -15,9 +8,11 @@ import { DeviceBreakdownChart } from "@/components/charts/device-breakdown-chart
 import { LocationMapChart } from "@/components/charts/location-map-chart"
 import { TopQrCodesChart } from "@/components/charts/top-qr-codes-chart"
 import { BrowserChart } from "@/components/charts/browser-chart"
+import { getDashboardAnalytics } from "@/services/QRCodeServices"
 
-export default function AnalyticsPage() {
-  const [date, setDate] = useState<Date>()
+export default async function AnalyticsPage() {
+  const analyticsDataRow = await getDashboardAnalytics()
+  const data = analyticsDataRow?.data
 
   return (
     <div className="flex flex-col gap-4 p-4 md:gap-8 md:p-8">
@@ -27,17 +22,7 @@ export default function AnalyticsPage() {
           <p className="text-muted-foreground">Comprehensive analytics for all your QR codes</p>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className="w-full justify-start text-left font-normal sm:w-[240px]">
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "PPP") : "Pick a date"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="end">
-              <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
-            </PopoverContent>
-          </Popover>
+
           <Select>
             <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="All QR Codes" />
@@ -65,15 +50,15 @@ export default function AnalyticsPage() {
           <TabsTrigger value="qrcodes">QR Codes</TabsTrigger>
         </TabsList>
         <TabsContent value="overview" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Scans</CardTitle>
                 <BarChart3 className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">1,284</div>
-                <p className="text-xs text-muted-foreground">+12% from last month</p>
+                <div className="text-2xl font-bold">{data?.totalScans?.count}</div>
+                <p className="text-xs text-muted-foreground">{`${data?.totalScans?.diffPercentage}% from last month`}</p>
               </CardContent>
             </Card>
             <Card>
@@ -82,40 +67,25 @@ export default function AnalyticsPage() {
                 <Smartphone className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">892</div>
-                <p className="text-xs text-muted-foreground">+5% from last month</p>
+                <div className="text-2xl font-bold">{data?.uniqueVisitors?.count}</div>
+                <p className="text-xs text-muted-foreground">{`${data?.uniqueVisitors?.diffPercentage}% from last month`}</p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Mobile Scans</CardTitle>
+                <CardTitle className="text-sm font-medium">Last 24 Hours</CardTitle>
                 <Smartphone className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">745</div>
-                <p className="text-xs text-muted-foreground">58% of total scans</p>
+                <div className="text-2xl font-bold">{data?.last24HrScans?.count}</div>
+                <p className="text-xs text-muted-foreground">{`${data?.last24HrScans?.diffPercentage}% of total scans`}</p>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Desktop Scans</CardTitle>
-                <Laptop className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">398</div>
-                <p className="text-xs text-muted-foreground">31% of total scans</p>
-              </CardContent>
-            </Card>
+
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
             <Card className="lg:col-span-4">
-              <CardHeader>
-                <CardTitle>Scans Over Time</CardTitle>
-                <CardDescription>Daily scan activity for the selected period</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ActivityChart />
-              </CardContent>
+              <ActivityChart data={data?.scanActivity} />
             </Card>
             <Card className="lg:col-span-3">
               <CardHeader>
@@ -124,13 +94,7 @@ export default function AnalyticsPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {[
-                    { country: "United States", count: 487, percentage: 38 },
-                    { country: "United Kingdom", count: 184, percentage: 14 },
-                    { country: "Canada", count: 143, percentage: 11 },
-                    { country: "Germany", count: 98, percentage: 8 },
-                    { country: "France", count: 76, percentage: 6 },
-                  ].map((item) => (
+                  {data?.topCountries?.map((item:any) => (
                     <div key={item.country} className="flex items-center">
                       <div className="w-full space-y-2">
                         <div className="flex items-center justify-between">
@@ -157,7 +121,7 @@ export default function AnalyticsPage() {
               </CardHeader>
               <CardContent>
                 <div className="h-[300px] w-full">
-                  <DeviceBreakdownChart />
+                  <DeviceBreakdownChart data={data?.scanByDevice}/>
                 </div>
               </CardContent>
             </Card>
@@ -168,14 +132,11 @@ export default function AnalyticsPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {[
-                    { device: "Mobile", icon: Smartphone, count: 745, percentage: 58 },
-                    { device: "Desktop", icon: Laptop, count: 398, percentage: 31 },
-                    { device: "Tablet", icon: Tablet, count: 141, percentage: 11 },
-                  ].map((item) => (
+                  {data?.scanByDevice.map((item:any) => (
                     <div key={item.device} className="flex items-center">
                       <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                        <item.icon className="h-4 w-4 text-primary" />
+                        {/* <item.icon className="h-4 w-4 text-primary" /> */}
+                        {/* todo: need to add icons  */}
                       </div>
                       <div className="w-full space-y-2">
                         <div className="flex items-center justify-between">
@@ -200,7 +161,7 @@ export default function AnalyticsPage() {
               <CardDescription>Breakdown of scans by browser</CardDescription>
             </CardHeader>
             <CardContent>
-              <BrowserChart />
+              <BrowserChart data={data?.browserDistribution} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -212,7 +173,7 @@ export default function AnalyticsPage() {
             </CardHeader>
             <CardContent className="flex items-center justify-center">
               <div className="h-[400px] w-full max-w-3xl">
-                <LocationMapChart />
+                <LocationMapChart data={data?.scanByLocation}/>
               </div>
             </CardContent>
           </Card>
@@ -224,16 +185,7 @@ export default function AnalyticsPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {[
-                    { country: "United States", count: 487, percentage: 38 },
-                    { country: "United Kingdom", count: 184, percentage: 14 },
-                    { country: "Canada", count: 143, percentage: 11 },
-                    { country: "Germany", count: 98, percentage: 8 },
-                    { country: "France", count: 76, percentage: 6 },
-                    { country: "Australia", count: 65, percentage: 5 },
-                    { country: "Japan", count: 54, percentage: 4 },
-                    { country: "Other", count: 177, percentage: 14 },
-                  ].map((item) => (
+                  {data?.topCountries?.map((item:any) => (
                     <div key={item.country} className="flex items-center">
                       <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
                         <Globe className="h-4 w-4 text-primary" />
@@ -261,16 +213,7 @@ export default function AnalyticsPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {[
-                    { city: "New York", count: 124, percentage: 10 },
-                    { city: "London", count: 98, percentage: 8 },
-                    { city: "Toronto", count: 76, percentage: 6 },
-                    { city: "Berlin", count: 65, percentage: 5 },
-                    { city: "Paris", count: 54, percentage: 4 },
-                    { city: "Sydney", count: 43, percentage: 3 },
-                    { city: "Tokyo", count: 38, percentage: 3 },
-                    { city: "Other", count: 786, percentage: 61 },
-                  ].map((item) => (
+                  {data?.topCities?.map((item:any) => (
                     <div key={item.city} className="flex items-center">
                       <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
                         <Globe className="h-4 w-4 text-primary" />
@@ -300,27 +243,19 @@ export default function AnalyticsPage() {
               <CardDescription>QR codes with the most scans</CardDescription>
             </CardHeader>
             <CardContent>
-              <TopQrCodesChart />
+              <TopQrCodesChart data={data?.topQRCodes}/>
             </CardContent>
           </Card>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              { name: "Product Landing Page", scans: 423, growth: "+12%" },
-              { name: "Event Registration", scans: 352, growth: "+8%" },
-              { name: "Promotional Offer", scans: 289, growth: "+15%" },
-              { name: "Contact Information", scans: 187, growth: "+5%" },
-              { name: "Digital Menu", scans: 156, growth: "+3%" },
-              { name: "Social Media Links", scans: 124, growth: "+7%" },
-            ].map((qr, index) => (
+            {data?.topQRCodes?.map((qr:any, index:any) => (
               <Card key={index}>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium">{qr.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{qr.scans.toLocaleString()}</div>
-                  <p className="text-xs text-muted-foreground">{qr.growth} from last month</p>
+                  <div className="text-2xl font-bold">{qr.totalScans.toLocaleString()}</div>
                   <div className="mt-4 h-1 w-full rounded-full bg-muted">
-                    <div className="h-1 rounded-full bg-primary" style={{ width: `${(qr.scans / 423) * 100}%` }}></div>
+                    <div className="h-1 rounded-full bg-primary" style={{ width: `${(qr.totalScans / 423) * 100}%` }}></div>
                   </div>
                 </CardContent>
               </Card>

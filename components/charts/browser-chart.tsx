@@ -1,23 +1,14 @@
 "use client"
 
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
 import { ChartTooltip } from "@/components/ui/chart"
-
-const browserData = [
-  { name: "Chrome", value: 45 },
-  { name: "Safari", value: 28 },
-  { name: "Firefox", value: 15 },
-  { name: "Edge", value: 10 },
-  { name: "Other", value: 2 },
-]
-
-export function BrowserChart() {
+export function BrowserChart({ data }: any) {
   return (
     <div className="h-[300px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
-          data={browserData}
+          data={data}
           margin={{
             top: 5,
             right: 30,
@@ -52,7 +43,12 @@ export function BrowserChart() {
               return null
             }}
           />
-          <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} barSize={30} />
+          <Legend
+            verticalAlign="bottom"
+            iconType="circle"
+            formatter={() => "Users (%)"}
+          />
+          <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} barSize={30} />
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -288,7 +288,6 @@ export default function QrCodeDetailsPage() {
                 </div>
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">Scans Over Time</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <ScansOverTimeChart data={scansOverDay} />

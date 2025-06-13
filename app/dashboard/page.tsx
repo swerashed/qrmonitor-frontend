@@ -2,13 +2,12 @@ import dynamic from "next/dynamic"
 import { Activity, ArrowUpRight, Globe, Laptop, QrCode, Scan, Smartphone, Tablet, Users } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardStats } from "@/components/dashboard-stats"
-import { RecentActivity } from "@/components/recent-activity"
-import { ActivityChart } from "@/components/charts/activity-chart"
 import { DeviceBreakdownChart } from "@/components/charts/device-breakdown-chart"
 import { LocationMapChart } from "@/components/charts/location-map-chart"
 import { getDashboardStats } from "@/services/QRCodeServices"
 import { formatDate } from "date-fns"
 import { cn } from "@/lib/utils"
+import { ScansOverTimeChart } from "@/components/charts/scans-over-time-chart"
 
 export default async function DashboardPage() {
   const dashboardStatsData = await getDashboardStats()
@@ -52,13 +51,26 @@ export default async function DashboardPage() {
         <DashboardStats
           title="Scans (Last 7 days)"
           value={dashboardData?.scansLast7Days?.count}
-          description={`${dashboardData?.scansLast7Days?.diffPercentage} from previous week`}
+          description={`${dashboardData?.scansLast7Days?.diffPercentage}% from previous week`}
           icon={<Activity className="h-4 w-4 text-muted-foreground" />}
         />
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <div className="lg:col-span-4">
-          <ActivityChart data={dashboardData?.scanActivity} />
+          <Card  className="h-full">
+            <CardHeader>
+              <CardTitle>Scan Activity</CardTitle>
+              <CardDescription>Scan activity over the last 30 days</CardDescription>
+            </CardHeader>
+            <CardContent className="h-full flex justify-center items-center">
+              <ScansOverTimeChart data={dashboardData?.scanActivity} />
+            </CardContent>
+          </Card>
+          {/* <Card className="h-full flex justify-center items-center">
+            <CardContent>
+            </CardContent>
+          </Card> */}
+          {/* <ActivityChart data={dashboardData?.scanActivity} /> */}
         </div>
         <Card className="lg:col-span-3">
           <CardHeader>
@@ -116,18 +128,18 @@ export default async function DashboardPage() {
           <CardContent>
             <div className="space-y-4">
               {
-                dashboardData?.topQRCodes?.map((topQR:any)=>(
-                  <div className="flex items-center">
-                  <div className="w-full space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">{topQR?.name}</span>
-                      <span className="text-sm text-muted-foreground">{topQR?.totalScans} scans</span>
-                    </div>
-                    <div className="h-2 w-full rounded-full bg-muted">
-                      <div className="h-2 w-[80%] rounded-full bg-primary"></div>
+                dashboardData?.topQRCodes?.map((topQR: any, index: any) => (
+                  <div key={index} className="flex items-center">
+                    <div className="w-full space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{topQR?.name}</span>
+                        <span className="text-sm text-muted-foreground">{topQR?.totalScans} scans</span>
+                      </div>
+                      <div className="h-2 w-full rounded-full bg-muted">
+                        <div className="h-2 w-[80%] rounded-full bg-primary"></div>
+                      </div>
                     </div>
                   </div>
-                </div>
                 ))
               }
             </div>
@@ -139,7 +151,7 @@ export default async function DashboardPage() {
             <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <DeviceBreakdownChart data={dashboardData?.scanByDevice}/>
+            <DeviceBreakdownChart data={dashboardData?.scanByDevice} />
           </CardContent>
         </Card>
         <Card>
@@ -148,7 +160,7 @@ export default async function DashboardPage() {
             <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <LocationMapChart  data={dashboardData?.scanByLocation} />
+            <LocationMapChart data={dashboardData?.scanByLocation} />
           </CardContent>
         </Card>
       </div>
