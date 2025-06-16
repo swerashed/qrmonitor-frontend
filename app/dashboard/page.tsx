@@ -1,4 +1,5 @@
-import dynamic from "next/dynamic"
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 import { Activity, ArrowUpRight, Globe, Laptop, QrCode, Scan, Smartphone, Tablet, Users } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardStats } from "@/components/dashboard-stats"
@@ -8,11 +9,10 @@ import { getDashboardStats } from "@/services/QRCodeServices"
 import { formatDate } from "date-fns"
 import { cn } from "@/lib/utils"
 import { ScansOverTimeChart } from "@/components/charts/scans-over-time-chart"
+import Loading from "./loading";
 
 export default async function DashboardPage() {
   const dashboardStatsData = await getDashboardStats()
-
-  // console.log("dashboard status", dashboardStatsData)
   const dashboardData = dashboardStatsData.data
 
   const getDeviceIcon = (device: string) => {
@@ -27,6 +27,7 @@ export default async function DashboardPage() {
         return <Globe className="h-4 w-4" />;
     }
   };
+
   return (
     <div className="flex flex-col gap-4 p-4 md:gap-8 md:p-8">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

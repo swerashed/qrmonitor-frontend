@@ -21,7 +21,7 @@ export default async function AnalyticsPage() {
           <h1 className="text-2xl font-bold tracking-tight">Analytics</h1>
           <p className="text-muted-foreground">Comprehensive analytics for all your QR codes</p>
         </div>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="hidden flex-col gap-2 sm:flex-row sm:items-center">
 
           <Select>
             <SelectTrigger className="w-full sm:w-[180px]">

@@ -2,8 +2,7 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
-import { BarChart3, LogOut, QrCode, Settings, User, Moon, Sun, Menu, LayoutDashboardIcon } from "lucide-react"
-
+import { BarChart3, LogOut, QrCode, Settings, Menu, LayoutDashboardIcon } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -20,18 +19,18 @@ import { handleClientLogout } from "@/hooks/handleClientLogout"
 import { getActiveUserClient } from "@/hooks/getActiveUserClient"
 import { getUserAvatarFallbackLetters } from "@/helpers/getUserAvatarFallback"
 import { useTheme } from "next-themes"
+import { ThemeToggleButton } from "./toggle-theme-button"
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboardIcon },
   { name: "QR Codes", href: "/dashboard/qr-codes", icon: QrCode },
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
-  { name: "Account", href: "/dashboard/account", icon: User },
+  // { name: "Account", href: "/dashboard/account", icon: User },
 ]
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const { setTheme, theme } = useTheme()
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
   const [activeUser, setActiveUser] = useState({})
   
@@ -89,10 +88,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <span className="text-lg font-semibold hidden md:inline-flex">QR Platform</span>
         </div>
         <div className="ml-auto flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            <span className="sr-only">Toggle theme</span>
-          </Button>
+              <ThemeToggleButton/>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full">
@@ -102,12 +98,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="bg-background">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
+              {/* <DropdownMenuItem asChild>
                 <a href="/dashboard/account">Profile</a>
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuItem asChild>
                 <a href="/dashboard/settings">Settings</a>
               </DropdownMenuItem>

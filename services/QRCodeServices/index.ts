@@ -2,11 +2,7 @@
 import { FormatErrorResponse } from '@/helpers/FormatErrorResponse';
 import { getActiveUser } from '@/hooks/getActiveUser';
 import app_axios from '@/lib/axios';
-import axios from 'axios';
 
-interface QRCodeScanData {
-  slug: string
-}
 export const CreateQRCode = async (data: any) => {
 
   if (!data) {

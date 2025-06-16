@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion } from "framer-motion"
 import { Check, ChevronDown, Moon, QrCode, Sun } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -15,13 +15,7 @@ import { useTheme } from "next-themes"
 
 export default function LandingPage() {
   const { theme, setTheme } = useTheme()
-  const { scrollYProgress } = useScroll()
   const [isQrHovered, setIsQrHovered] = useState(false)
-
-  // Parallax effects
-  const heroImageY = useTransform(scrollYProgress, [0, 0.5], [0, 100])
-  const featuresOpacity = useTransform(scrollYProgress, [0.1, 0.2], [0, 1])
-  const demoOpacity = useTransform(scrollYProgress, [0.3, 0.4], [0, 1])
 
   // QR code animation
   const qrVariants = {
@@ -85,7 +79,7 @@ export default function LandingPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.8 }}
                 className="flex flex-col justify-center space-y-4"
               >
                 <div className="space-y-2">
@@ -108,7 +102,9 @@ export default function LandingPage() {
                   </Button>
                 </div>
               </motion.div>
-              <motion.div style={{ y: heroImageY }} className="flex items-center justify-center">
+              <motion.div  initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }} className="flex items-center justify-center">
                 <motion.div
                   variants={qrVariants}
                   initial="initial"
@@ -143,7 +139,9 @@ export default function LandingPage() {
 
         {/* Features Section */}
         <section id="features" className="py-20 bg-muted/50">
-          <motion.div style={{ opacity: featuresOpacity }} className="container px-4 md:px-6">
+          <motion.div  initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }} className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-primary px-3 py-1 text-sm text-primary-foreground">
@@ -180,7 +178,9 @@ export default function LandingPage() {
 
         {/* Interactive Demo Section */}
         <section id="demo" className="py-20">
-          <motion.div style={{ opacity: demoOpacity }} className="container px-4 md:px-6">
+          <motion.div  initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }} className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-primary px-3 py-1 text-sm text-primary-foreground">
