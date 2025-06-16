@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 
 import "./globals.css"
+import ReactQueryProviders from "@/providers/react-query-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -26,10 +27,12 @@ export default function RootLayout({
         <ThemeProvider storageKey="my-app-theme"
           themes={["light", "dark"]}
           attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ReactQueryProviders>
           <TooltipProvider>
             {children}
             <Toaster />
           </TooltipProvider>
+          </ReactQueryProviders>
         </ThemeProvider>
       </body>
     </html>

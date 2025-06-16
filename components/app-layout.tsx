@@ -20,6 +20,7 @@ import { getActiveUserClient } from "@/hooks/getActiveUserClient"
 import { getUserAvatarFallbackLetters } from "@/helpers/getUserAvatarFallback"
 import { useTheme } from "next-themes"
 import { ThemeToggleButton } from "./toggle-theme-button"
+import Link from "next/link"
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboardIcon },
@@ -60,10 +61,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </SheetTrigger>
           <SheetContent side="left" className="w-72">
             <div className="flex flex-col gap-4 py-4">
-              <div className="flex items-center gap-2 px-2">
+              <Link href="/" className="flex items-center gap-2 px-2">
                 <QrCode className="h-6 w-6" />
                 <span className="text-lg font-semibold">QR Platform</span>
-              </div>
+              </Link>
               <nav className="grid gap-2 px-2">
                 {navigation.map((item) => (
                   <Button
@@ -83,10 +84,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </div>
           </SheetContent>
         </Sheet>
-        <div className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <QrCode className="h-6 w-6" />
           <span className="text-lg font-semibold hidden md:inline-flex">QR Platform</span>
-        </div>
+        </Link>
         <div className="ml-auto flex items-center gap-4">
               <ThemeToggleButton/>
           <DropdownMenu>
