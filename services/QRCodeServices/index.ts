@@ -2,6 +2,7 @@
 import { FormatErrorResponse } from '@/helpers/FormatErrorResponse';
 import { getActiveUser } from '@/hooks/getActiveUser';
 import app_axios from '@/lib/axios';
+import axios from 'axios';
 
 export const CreateQRCode = async (data: any) => {
 
@@ -123,10 +124,23 @@ export const deleteQrCode = async (id: string) => {
   return response.data
 }
 
-
 export const getDashboardStats = async () => {
-  const response = await app_axios.get(`/qr-code/dashboard/stats`)
-  return response.data
+  try {
+    const response = await app_axios.get(`/qr-code/dashboard/stats`)
+    if (!response.data.success) {
+      throw new Error(response.data.message || "Unknown error occurred")
+    }
+    return response.data
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      const message =
+        error.response?.data?.message ||
+        "Server responded with an error"
+      throw new Error(message)
+    }
+    // Generic fallback
+    throw new Error("Unexpected error fetching dashboard stats")
+  }
 }
 
 export const getDashboardAnalytics = async () => {

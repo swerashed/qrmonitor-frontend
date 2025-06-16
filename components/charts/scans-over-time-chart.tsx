@@ -3,9 +3,20 @@
 import { Area, AreaChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
 import { ChartTooltip } from "@/components/ui/chart"
+import { CardContent } from "../ui/card"
 
 
 export function ScansOverTimeChart({ data }: any) {
+
+  if (!Array.isArray(data) || data.length === 0) {
+    return (
+      <div className="h-[200px] w-full flex items-center justify-center text-sm text-muted-foreground">
+        No data available
+      </div>
+    )
+  }
+  
+
   const renderLegend = () => (
     <div className="mt-4 flex justify-center text-xs text-muted-foreground uppercase">
       <div className="flex items-center gap-2">
@@ -17,6 +28,7 @@ export function ScansOverTimeChart({ data }: any) {
 
 
   return (
+    <CardContent className="flex justify-center items-center h-full">
     <div className="h-[200px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
@@ -93,5 +105,7 @@ export function ScansOverTimeChart({ data }: any) {
         </AreaChart>
       </ResponsiveContainer>
     </div>
+    </CardContent>
+
   )
 }
