@@ -75,6 +75,7 @@ export interface ScanOverDay {
 export interface CreateQrCodeModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  refetch: () => void
 }
 
 export interface DashboardStatsProps {
@@ -82,5 +83,23 @@ export interface DashboardStatsProps {
     value: string
     description: string
     icon: React.ReactNode
+  }
+  
+
+
+  export interface QRCodeCreateInterface {
+    id: string;
+    name: string;
+    description: string | null;
+    settings: Record<string, unknown> | null;
+    totalEdits: number;
+    targetUrl: string;
+    totalScans: number;
+    uniqueScans: number;
+    lastScans: Date | null;
+    trackingEnabled: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    creatorId: string;
   }
   

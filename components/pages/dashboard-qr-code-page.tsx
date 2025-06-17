@@ -1,5 +1,5 @@
 "use client"
-import { Suspense, useEffect, useState } from "react"
+import {  useEffect, useState } from "react"
 import { format } from "date-fns"
 import { Download, Edit, Filter, MoreHorizontal, Plus, QrCode, Search, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -18,34 +18,39 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { CreateQrCodeModal } from "@/components/create-qr-code-modal"
 import { cn } from "@/lib/utils"
-import { deleteQrCode, GetAllQRCode } from "@/services/QRCodeServices"
+import { deleteQrCode, getAllQRCode } from "@/services/QRCodeServices"
 import QRCodeStyling from "qr-code-styling"
-import ClientQR from "@/components/qr-code-creator"
 import { toast } from "sonner"
+import { ErrorBlock } from "../error-block"
+import QRCodeDashboardLoading from "@/app/dashboard/qr-codes/loading"
+import { useQuery } from "@tanstack/react-query"
 
-interface QRCode {
-  id: string;
-  name: string;
-  description: string | null;
-  settings: Record<string, unknown> | null;
-  totalEdits: number;
-  targetUrl: string;
-  totalScans: number;
-  uniqueScans: number;
-  lastScans: Date | null;
-  trackingEnabled: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  creatorId: string;
-}
 
-export default function DashboardQrCodesPage({data}:any) {
+export default function DashboardQrCodesPage() {
+  const { data, isError, isLoading, error, isSuccess, refetch } = useQuery({
+    queryKey: ["getAllQRCode"],
+    queryFn: getAllQRCode,
+  })
+
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [date, setDate] = useState<Date>()
   const [searchQuery, setSearchQuery] = useState("")
-  const [qrCodes, setQrCodes] = useState<QRCode[]>(data)
+  const qrCodes = data?.data || []
 
-  const filteredQrCodes = qrCodes?.filter((qr) => 
+
+  if (isLoading) {
+    return <QRCodeDashboardLoading/>
+  }
+  if (isError) {
+    return (
+      <ErrorBlock
+        message={(error as Error).message}
+        retry={() => refetch()}
+      />
+    )
+  }
+
+  const filteredQrCodes = qrCodes?.filter((qr:any) => 
     qr?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase())
   )
 
@@ -59,26 +64,26 @@ export default function DashboardQrCodesPage({data}:any) {
   const handleDeleteQr = async (id:string) => {
     try {
       const response = await deleteQrCode(id)
-      if (response.success) {
-        toast("Delete successful", {
+      if(response.success) {
+        toast.success("Delete successful", {
           description: "Your QR code has been created successfully.",
         })
-
+        refetch()
 
       } else {
-        toast("Delete failed!", {
+        toast.error("Delete failed!", {
           description: "Failed to delete your QR code!",
         })
       }
     } catch (err) {
-      toast("Delete failed!", {
+      toast.error("Delete failed!", {
         description: "Failed to delete your QR code!",
       })
     }
   }
 
 
-  return (
+return (
     <div className="flex flex-col gap-4 p-4 md:gap-8 md:p-8">
       <div className="flex items-center justify-between">
         <div>
@@ -106,7 +111,8 @@ export default function DashboardQrCodesPage({data}:any) {
                 <span className="sr-only">Search</span>
               </Button>
             </div>
-            <div className="flex items-center gap-2">
+            {/* todo: need to enable this when filter is enable  */}
+            <div className="hidden items-center gap-2">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" size="sm" className="h-9 gap-1 border-dashed">
@@ -144,11 +150,11 @@ export default function DashboardQrCodesPage({data}:any) {
             </TableHeader>
             <TableBody>
               {filteredQrCodes.length > 0 ? (
-                filteredQrCodes.map((qr) => (
+                filteredQrCodes.map((qr:any) => (
                   <TableRow key={qr.id}>
                     <TableCell>
                       <div className="flex h-12 w-12 items-center justify-center rounded-md border">
-                      <ClientQR width={48} height={48} qrCodeOption={qr?.settings}/>
+                      <QrCode className="w-8 h-8"/>
                       </div>
                     </TableCell>
                     <TableCell className="font-medium">
@@ -182,14 +188,14 @@ export default function DashboardQrCodesPage({data}:any) {
                       </span>
                     </TableCell>
                     <TableCell className="text-right">
-                      <DropdownMenu>
+                      <DropdownMenu> 
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon">
                             <MoreHorizontal className="h-4 w-4" />
                             <span className="sr-only">Actions</span>
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                        <DropdownMenuContent align="end"  className="bg-background">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuItem asChild>
                             <a href={`/dashboard/qr-codes/${qr.id}`}>
@@ -239,7 +245,7 @@ export default function DashboardQrCodesPage({data}:any) {
           </Table>
         </CardContent>
       </Card>
-      <CreateQrCodeModal open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen} />
+      <CreateQrCodeModal refetch={refetch} open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen} />
     </div>
   )
 }

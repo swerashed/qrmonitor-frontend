@@ -149,7 +149,7 @@ export const getDashboardAnalytics = async () => {
 }
 
 
-export const GetAllQRCode = async () => {
+export const getAllQRCode = async () => {
   const response = await app_axios.get(`/qr-code/get-all-qr`)
   return response.data
 

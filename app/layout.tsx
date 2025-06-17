@@ -30,7 +30,7 @@ export default function RootLayout({
           <ReactQueryProviders>
           <TooltipProvider>
             {children}
-            <Toaster />
+            <Toaster/>
           </TooltipProvider>
           </ReactQueryProviders>
         </ThemeProvider>

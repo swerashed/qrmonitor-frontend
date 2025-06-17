@@ -17,17 +17,39 @@ import { Switch } from "@/components/ui/switch"
 import { CreateQRCode } from "@/services/QRCodeServices"
 import ClientQR from "./qr-code-creator"
 import { CreateQrCodeModalProps } from "@/interfaces"
+import { useMutation } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 
 
-export function CreateQrCodeModal({ open, onOpenChange }: CreateQrCodeModalProps) {
+export function CreateQrCodeModal({ open, onOpenChange, refetch }: CreateQrCodeModalProps) {
   const [name, setName] = useState("")
   const [url, setUrl] = useState("")
   const [description, setDescription] = useState("")
   const [qrCodeId, setQrCodeId] = useState<string | null>(null)
   const [trackingEnabled, setTrackingEnabled] = useState(true)
   const [qrCodeOption, setQRCodeOption] = useState({ "type": "canvas", "shape": "square", width: 300, height: 300, "data": "", "margin": 5, "qrOptions": { "typeNumber": "0", "mode": "Byte", "errorCorrectionLevel": "Q" }, "imageOptions": { "saveAsBlob": true, "hideBackgroundDots": false, "imageSize": 0, "margin": 0 }, "dotsOptions": { "type": "dots", "color": "#000000", "roundSize": true, "gradient": null }, "backgroundOptions": { "round": 0, "color": "#ffffff" }, "image": "", "dotsOptionsHelper": { "colorType": { "single": true, "gradient": false }, "gradient": { "linear": true, "radial": false, "color1": "#6a1a4c", "color2": "#6a1a4c", "rotation": "0" } }, "cornersSquareOptions": { "type": "", "color": "#000000" }, "cornersSquareOptionsHelper": { "colorType": { "single": true, "gradient": false }, "gradient": { "linear": true, "radial": false, "color1": "#000000", "color2": "#000000", "rotation": "0" } }, "cornersDotOptions": { "type": "", "color": "#000000" }, "cornersDotOptionsHelper": { "colorType": { "single": true, "gradient": false }, "gradient": { "linear": true, "radial": false, "color1": "#000000", "color2": "#000000", "rotation": "0" } }, "backgroundOptionsHelper": { "colorType": { "single": true, "gradient": false }, "gradient": { "linear": true, "radial": false, "color1": "#ffffff", "color2": "#ffffff", "rotation": "0" } } })
+  const { mutate, isPending } = useMutation({
+    mutationFn: CreateQRCode,
+    onSuccess: () => {
+      toast.success("QR Code created successfully!")
 
+      refetch()
+      // Reset form
+      setName("")
+      setUrl("")
+      setDescription("")
+      setQrCodeId(null)
+      setTrackingEnabled(true)
+
+      // Close modal
+      onOpenChange(false)
+
+    },
+    onError: (error: any) => {
+      toast.error(`Failed to create QR Code: ${error?.message || "Something went wrong"}`)
+    },
+  })
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -45,18 +67,8 @@ export function CreateQrCodeModal({ open, onOpenChange }: CreateQrCodeModalProps
       settings: qrCodeOption
     }
 
-    try {
-      const qrCodeCreateResponse = await CreateQRCode(data)
-      // Reset form
-      setName("")
-      setUrl("")
-      setDescription("")
-      setQrCodeId(null)
-      setTrackingEnabled(true)
-      onOpenChange(false)
-    } catch (error) {
-      console.error("Failed to create QR code", error)
-    }
+    mutate(data)
+  
   }
 
   return (
