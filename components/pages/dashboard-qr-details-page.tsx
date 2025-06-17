@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { format, formatDate } from "date-fns";
-import { ArrowLeft, Download, Edit2, Globe, Laptop, Save, Smartphone, Tablet, Trash2 } from "lucide-react";
+import { ArrowLeft, Download, Edit2, Globe, Laptop, Router, Save, Smartphone, Tablet, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,15 +28,16 @@ import { deleteQrCode, editQRCode, getSingleQRCode } from "@/services/QRCodeServ
 import ClientQR from "@/components/qr-code-creator";
 import { handleQRDownload } from "@/helpers/handleQRDownload";
 import { toast } from "sonner";
-import { QRCodeData, RecentScan, ScanByDevice, ScanByLocation, ScanOverDay, ScanOverTime } from "@/interfaces";
+import { RecentScan, ScanByDevice, ScanByLocation, ScanOverDay, ScanOverTime } from "@/interfaces";
 import SingleQRLoading from "@/app/dashboard/qr-codes/[id]/loading";
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from 'next/navigation'
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useParams, useRouter } from 'next/navigation'
 import { ErrorBlock } from "../error-block";
 import { getDeviceIcon } from "@/hooks/getDeviceIcon";
 
 export default function QrCodeDetailsPage() {
   const params = useParams()
+  const router = useRouter()
   const id = params?.id as string | undefined
 
   if (!id) {
@@ -77,8 +78,6 @@ export default function QrCodeDetailsPage() {
       />
     )
   }
-  console.log(data.data)
-  // return 
   const qrCode = data?.data?.qrCode || {}
   const [isEditing, setIsEditing] = useState(false);
   const [url, setUrl] = useState<string>(qrCode.targetUrl || "");
@@ -89,9 +88,33 @@ export default function QrCodeDetailsPage() {
   const scansOverTime: ScanOverTime[] = data?.data?.scansOverTime || []
   const scansOverDay: ScanOverDay[] = data?.data?.scanActivity || []
 
+  const mutation = useMutation({
+    mutationFn: editQRCode,
+    onSuccess: (data) => {
+      toast.success("QR Code updated successfully!")
+      setIsEditing(false)
+      refetch()
+    },
+    onError: (error: Error) => {
+      toast.error("Failed to update QR Code")
+    }
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteQrCode,
+    onSuccess: (_, id) => {
+      toast.success("QR Code deleted successfully!")
+      router.push("/dashboard/qr-codes")
+    },
+    onError: (error: Error) => {
+      toast.error("Delete failed!", {
+        description: error.message || "Failed to delete your QR code.",
+      })
+    }
+  })
 
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!qrCode) return;
 
     const payload = {
@@ -100,37 +123,14 @@ export default function QrCodeDetailsPage() {
       trackingEnabled,
     };
 
-    const response = await editQRCode(payload);
-    console.log("update response", response)
-    // if (response.success) {
-    //   alert("QR Code updated successfully");
-    //   setIsEditing(false);
-    // } else {
-    //   alert("Failed to update QR Code");
-    // }
-  };
-
-
-  const handleDeleteQr = async (id: string) => {
-    try {
-      const response = await deleteQrCode(id)
-      if (response.success) {
-        toast("Delete successful", {
-          description: "Your QR code has been created successfully.",
-        })
-
-
-      } else {
-        toast("Delete failed!", {
-          description: "Failed to delete your QR code!",
-        })
-      }
-    } catch (err) {
-      toast("Delete failed!", {
-        description: "Failed to delete your QR code!",
-      })
-    }
+    mutation.mutate(payload)
   }
+
+
+  const handleDeleteQr = (id: string) => {
+    deleteMutation.mutate(id)
+  }
+
 
   if (!qrCode) {
     return <SingleQRLoading />;
@@ -268,112 +268,133 @@ export default function QrCodeDetailsPage() {
               <TabsContent value="devices">
                 <Card>
                   <CardContent className="p-4">
-                    <div className="grid gap-8 md:grid-cols-2">
-                      <div className="space-y-4">
-                        {scansByDevice?.map((item) => (
-                          <div key={item.device} className="flex items-center">
-                            <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                              {getDeviceIcon(item.device)}
-                            </div>
-                            <div className="w-full space-y-2">
-                              <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium">{item.device}</span>
-                                <span className="text-sm text-muted-foreground">
-                                  {item.count} scans ({item.percentage}%)
-                                </span>
+                    {scansByDevice?.length > 0 ? (
+                      <div className="grid gap-8 md:grid-cols-2">
+                        <div className="space-y-4">
+                          {scansByDevice.map((item) => (
+                            <div key={item.device} className="flex items-center">
+                              <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                                {getDeviceIcon(item.device)}
                               </div>
-                              <div className="h-2 w-full rounded-full bg-muted">
-                                <div
-                                  className="h-2 rounded-full bg-primary"
-                                  style={{ width: `${item.percentage}%` }}
-                                ></div>
+                              <div className="w-full space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-medium">{item.device}</span>
+                                  <span className="text-sm text-muted-foreground">
+                                    {item.count} scans ({item.percentage}%)
+                                  </span>
+                                </div>
+                                <div className="h-2 w-full rounded-full bg-muted">
+                                  <div
+                                    className="h-2 rounded-full bg-primary"
+                                    style={{ width: `${item.percentage}%` }}
+                                  ></div>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
+                        <div className="flex items-center justify-center">
+                          <DeviceBreakdownChart data={scansByDevice} />
+                        </div>
                       </div>
-                      <div className="flex items-center justify-center">
-                        <DeviceBreakdownChart data={scansByDevice} />
+                    ) : (
+                      <div className="col-span-2 flex items-center justify-center py-8 h-full min-h-[250px]">
+                        <p className="text-sm text-muted-foreground">No scan data available.</p>
                       </div>
-                    </div>
+                    )}
+
                   </CardContent>
                 </Card>
+
               </TabsContent>
               <TabsContent value="locations">
                 <Card>
                   <CardContent className="p-4">
-                    <div className="grid gap-8 md:grid-cols-2">
-                      <div className="space-y-4">
-                        {scansByLocation?.map((item) => (
-                          <div key={item.country} className="flex items-center">
-                            <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                              <Globe className="h-4 w-4 text-primary" />
-                            </div>
-                            <div className="w-full space-y-2">
-                              <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium">{item.country}</span>
-                                <span className="text-sm text-muted-foreground">
-                                  {item.count} scans ({item.percentage}%)
-                                </span>
+                  {scansByLocation?.length > 0 ? (
+                      <div className="grid gap-8 md:grid-cols-2">
+                        <div className="space-y-4">
+                          {scansByLocation.map((item) => (
+                            <div key={item.country} className="flex items-center">
+                              <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                                <Globe className="h-4 w-4 text-primary" />
                               </div>
-                              <div className="h-2 w-full rounded-full bg-muted">
-                                <div
-                                  className="h-2 rounded-full bg-primary"
-                                  style={{ width: `${item.percentage}%` }}
-                                ></div>
+                              <div className="w-full space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-medium">{item.country}</span>
+                                  <span className="text-sm text-muted-foreground">
+                                    {item.count} scans ({item.percentage}%)
+                                  </span>
+                                </div>
+                                <div className="h-2 w-full rounded-full bg-muted">
+                                  <div
+                                    className="h-2 rounded-full bg-primary"
+                                    style={{ width: `${item.percentage}%` }}
+                                  ></div>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
+                        <div className="flex items-center justify-center">
+                          <LocationMapChart data={scansByLocation} />
+                        </div>
                       </div>
-                      <div className="flex items-center justify-center">
-                        <LocationMapChart data={scansByLocation} />
-                      </div>
+                  ) : (
+                    <div className="col-span-2 flex items-center justify-center py-8 h-full min-h-[250px]">
+                      <p className="text-sm text-muted-foreground">No scan data available.</p>
                     </div>
+                  )}
                   </CardContent>
                 </Card>
               </TabsContent>
               <TabsContent value="scans">
                 <Card>
                   <CardContent className="p-4">
-                    <div className="space-y-4">
-                      {recentScans?.map((scan) => (
-                        <div key={scan.id} className="flex items-center gap-4 rounded-md border p-3">
-                          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
-                            {scan.device === "mobile" ? (
-                              <Smartphone className="h-4 w-4 text-primary" />
-                            ) : scan.device === "desktop" ? (
-                              <Laptop className="h-4 w-4 text-primary" />
-                            ) : (
-                              <Tablet className="h-4 w-4 text-primary" />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium">{scan.location}</div>
-                            <div className="text-sm text-muted-foreground">
-                              {format(scan.timestamp, "MMM d, yyyy 'at' h:mm a")}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div
-                              className={cn(
-                                "flex items-center rounded-full px-2 py-1 text-xs font-medium",
-                                scan.device === "mobile"
-                                  ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
-                                  : scan.device === "desktop"
-                                    ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                                    : "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+                    {recentScans?.length > 0 ? (
+                      <div className="space-y-4">
+                        {recentScans.map((scan) => (
+                          <div key={scan.id} className="flex items-center gap-4 rounded-md border p-3">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+                              {scan.device === "mobile" ? (
+                                <Smartphone className="h-4 w-4 text-primary" />
+                              ) : scan.device === "desktop" ? (
+                                <Laptop className="h-4 w-4 text-primary" />
+                              ) : (
+                                <Tablet className="h-4 w-4 text-primary" />
                               )}
-                            >
-                              {getDeviceIcon(scan.device)}
-                              <span className="ml-1 capitalize">{scan.device}</span>
+                            </div>
+                            <div className="flex-1">
+                              <div className="font-medium">{scan.location}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {format(scan.timestamp, "MMM d, yyyy 'at' h:mm a")}
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div
+                                className={cn(
+                                  "flex items-center rounded-full px-2 py-1 text-xs font-medium",
+                                  scan.device === "mobile"
+                                    ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                                    : scan.device === "desktop"
+                                      ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                                      : "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+                                )}
+                              >
+                                {getDeviceIcon(scan.device)}
+                                <span className="ml-1 capitalize">{scan.device}</span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="col-span-2 flex items-center justify-center py-8 h-full min-h-[250px]">
+                        <p className="text-sm text-muted-foreground">No scan data available.</p>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
+
               </TabsContent>
             </Tabs>
           </CardContent>
