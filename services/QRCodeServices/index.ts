@@ -95,7 +95,7 @@ export const scanQRCode = async (data: any) => {
   }
 }
 
-export const GetSingleQRCode = async (id: string) => {
+export const getSingleQRCode = async (id: string) => {
   if (!id) {
     return {
       success: false,
@@ -107,7 +107,7 @@ export const GetSingleQRCode = async (id: string) => {
   return {
     success: true,
     message: "QR code fetched successfully",
-    data: response.data
+    data: response.data.data
   }
 }
 

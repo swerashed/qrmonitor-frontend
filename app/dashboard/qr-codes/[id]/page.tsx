@@ -1,13 +1,22 @@
 import QrCodeDetailsPage from "@/components/pages/dashboard-qr-details-page";
-import { GetSingleQRCode } from "@/services/QRCodeServices";
+import { getSingleQRCode } from "@/services/QRCodeServices";
+import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 
-export default async function SingleQrCodeDetailsPage({params}:any) {
+export default async function SingleQrCodeDetailsPage({ params }: any) {
   const id = (await params).id
 
-  const response = await GetSingleQRCode(id);
-  const data = response.data.data;
- 
+  const queryClient = new QueryClient()
+
+  await queryClient.prefetchQuery({
+    queryKey: ['getSingleQRCode', id],
+    queryFn: () => getSingleQRCode(id),
+  })
+
+
   return (
-   <QrCodeDetailsPage data={data}/>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <QrCodeDetailsPage />
+    </HydrationBoundary>
+
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { format } from "date-fns";
-import {ArrowLeft, Download, Edit2, Globe, Laptop, Save, Smartphone, Tablet, Trash2} from "lucide-react";
+import { format, formatDate } from "date-fns";
+import { ArrowLeft, Download, Edit2, Globe, Laptop, Save, Smartphone, Tablet, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -24,85 +24,70 @@ import { ScansOverTimeChart } from "@/components/charts/scans-over-time-chart";
 import { DeviceBreakdownChart } from "@/components/charts/device-breakdown-chart";
 import { LocationMapChart } from "@/components/charts/location-map-chart";
 import { TimeOfDayChart } from "@/components/charts/time-of-day-chart";
-import { useParams } from "next/navigation";
-import { deleteQrCode, editQRCode, GetSingleQRCode } from "@/services/QRCodeServices";
+import { deleteQrCode, editQRCode, getSingleQRCode } from "@/services/QRCodeServices";
 import ClientQR from "@/components/qr-code-creator";
 import { handleQRDownload } from "@/helpers/handleQRDownload";
 import { toast } from "sonner";
 import { QRCodeData, RecentScan, ScanByDevice, ScanByLocation, ScanOverDay, ScanOverTime } from "@/interfaces";
 import SingleQRLoading from "@/app/dashboard/qr-codes/[id]/loading";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from 'next/navigation'
+import { ErrorBlock } from "../error-block";
+import { getDeviceIcon } from "@/hooks/getDeviceIcon";
 
-export default function QrCodeDetailsPage({data}:any) {
+export default function QrCodeDetailsPage() {
+  const params = useParams()
+  const id = params?.id as string | undefined
+
+  if (!id) {
+    return (
+      <ErrorBlock
+        message="Invalid QR code ID."
+      // retry={null}
+      />
+    )
+  }
 
 
+  const {
+    data,
+    isError,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["getSingleQRCode", id],
+    queryFn: () => getSingleQRCode(id),
+    enabled: !!id,
+  })
+
+
+  if (isLoading) {
+    return <SingleQRLoading />
+  }
+
+  if (isError || !data?.data?.qrCode) {
+    return (
+      <ErrorBlock
+        message={
+          (error as Error)?.message ||
+          "QR Code not found or something went wrong."
+        }
+        retry={() => refetch()}
+      />
+    )
+  }
+  console.log(data.data)
+  // return 
+  const qrCode = data?.data?.qrCode || {}
   const [isEditing, setIsEditing] = useState(false);
-  const [url, setUrl] = useState<string>("");
-  const [trackingEnabled, setTrackingEnabled] = useState<boolean>(true);
-  const [qrCode, setQrCode] = useState<QRCodeData | null>(null);
-  const [scansByDevice, setScansByDevice] = useState<ScanByDevice[]>([]);
-  const [scansByLocation, setScansByLocation] = useState<ScanByLocation[]>([]);
-  const [recentScans, setRecentScans] = useState<RecentScan[]>([]);
-  const [scansOverTime, setScansOverTime] = useState<ScanOverTime[]>([]);
-  const [scansOverDay, setScansOverDay] = useState<ScanOverDay[]>([]);
-
-  useEffect(() => {
-    const fetchQRCode = async () => {
-
-      if (data) {
-       
-        // Set main QR Code data
-        const qr = data.qrCode;
-        setQrCode(qr);
-        setUrl(qr.targetUrl);
-        setTrackingEnabled(qr.trackingEnabled);
-
-        // Process scans by device
-        const devices = data.scansByDevice.map((item: any) => ({
-          device: item.deviceType || "Unknown",
-          count: item._count._all,
-          percentage: 0,
-        }));
-        
-        const totalDevices = devices.reduce(
-          (sum: number, d: any) => sum + d.count,
-          0
-        );
-        devices.forEach((d: any) => {
-          d.percentage = Math.round((d.count / totalDevices) * 100);
-        });
-        setScansByDevice(devices);
-
-        // Process scans by location
-        const locations = data.scansByLocation.map((item: any) => ({
-          country: item.region || "Other",
-          count: item._count._all,
-          percentage: 0,
-        }));
-        const totalLocations = locations.reduce(
-          (sum: number, l: any) => sum + l.count,
-          0
-        );
-        locations.forEach((l: any) => {
-          l.percentage = Math.round((l.count / totalLocations) * 100);
-        });
-        locations.sort((a: any, b: any) => b.count - a.count).splice(5);
-        setScansByLocation(locations);
-
-        // Process recent scans
-        const scans = data.recentScans.map((scan: any) => ({
-          id: scan.id,
-          location: scan.city && scan.region ? `${scan.city}, ${scan.region}` : scan.country || "Unknown",
-          device: scan.deviceType?.toLowerCase() || "unknown",
-          timestamp: scan.timestamp,
-        }));
-        setRecentScans(scans);
-
-        setScansOverTime(data.scansOverTime)
-        setScansOverDay(data.scansOverDay)
-      }
-    };
-    fetchQRCode();
-  }, [data]);
+  const [url, setUrl] = useState<string>(qrCode.targetUrl || "");
+  const [trackingEnabled, setTrackingEnabled] = useState<boolean>(qrCode.trackingEnabled || true);
+  const scansByDevice: ScanByDevice[] = data?.data.scanByDevice || []
+  const scansByLocation: ScanByLocation[] = data?.data.scanByLocation || []
+  const recentScans: RecentScan[] = data?.data.recentScans || []
+  const scansOverTime: ScanOverTime[] = data?.data?.scansOverTime || []
+  const scansOverDay: ScanOverDay[] = data?.data?.scanActivity || []
 
 
 
@@ -126,7 +111,7 @@ export default function QrCodeDetailsPage({data}:any) {
   };
 
 
-  const handleDeleteQr = async (id:string) => {
+  const handleDeleteQr = async (id: string) => {
     try {
       const response = await deleteQrCode(id)
       if (response.success) {
@@ -147,21 +132,8 @@ export default function QrCodeDetailsPage({data}:any) {
     }
   }
 
-  const getDeviceIcon = (device: string) => {
-    switch (device.toLowerCase()) {
-      case "mobile":
-        return <Smartphone className="h-4 w-4" />;
-      case "desktop":
-        return <Laptop className="h-4 w-4" />;
-      case "tablet":
-        return <Tablet className="h-4 w-4" />;
-      default:
-        return <Globe className="h-4 w-4" />;
-    }
-  };
-
   if (!qrCode) {
-    return <SingleQRLoading/>;
+    return <SingleQRLoading />;
   }
 
   const handleDownload = () => {
@@ -181,13 +153,13 @@ export default function QrCodeDetailsPage({data}:any) {
           <h1 className="text-2xl font-bold tracking-tight">{qrCode?.name}</h1>
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={()=>{
+          <Button onClick={() => {
             handleDownload()
           }} variant="outline" size="sm">
             <Download className="mr-2 h-4 w-4" />
             Download QR
           </Button>
-          <Button variant="destructive" size="sm" onClick={()=>{
+          <Button variant="destructive" size="sm" onClick={() => {
             handleDeleteQr(qrCode?.id)
           }}>
             <Trash2 className="mr-2 h-4 w-4" />
@@ -202,8 +174,8 @@ export default function QrCodeDetailsPage({data}:any) {
             <CardDescription>Created on {format(qrCode.createdAt, "MMMM d, yyyy")}</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-4">
-            <div  className="flex h-48 w-48 items-center justify-center rounded-md border overflow-hidden">
-               <ClientQR width={192} height={192} qrCodeOption={qrCode?.settings}/>
+            <div className="flex h-48 w-48 items-center justify-center rounded-md border overflow-hidden">
+              <ClientQR width={192} height={192} qrCodeOption={qrCode?.settings} />
             </div>
             <div className="grid w-full gap-4">
               <div className="grid gap-2">
@@ -257,7 +229,7 @@ export default function QrCodeDetailsPage({data}:any) {
                     <CardContent>
                       <div className="text-2xl font-bold">{qrCode?.totalScans.toLocaleString()}</div>
                       <p className="text-xs text-muted-foreground">
-                        {/* Last scanned {format(qrCode?.lastScanned, "MMMM d, yyyy")} */}
+                        Last scanned {formatDate(qrCode?.updatedAt, "MMMM d, yyyy")}
                       </p>
                     </CardContent>
                   </Card>
@@ -268,13 +240,17 @@ export default function QrCodeDetailsPage({data}:any) {
                     <CardContent>
                       <div className="text-2xl font-bold">{qrCode?.uniqueScans.toLocaleString()}</div>
                       <p className="text-xs text-muted-foreground">
-                        {Math.round((qrCode?.uniqueScans / qrCode?.totalScans) * 100)}% of total scans
+                        {qrCode?.uniqueScans && qrCode?.totalScans
+                          ? `${Math.round((qrCode.uniqueScans / qrCode.totalScans) * 100)}% of total scans`
+                          : "-- of total scans"}
                       </p>
+
                     </CardContent>
                   </Card>
                 </div>
                 <Card>
                   <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium">Scans over Time</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <ScansOverTimeChart data={scansOverDay} />
@@ -285,7 +261,7 @@ export default function QrCodeDetailsPage({data}:any) {
                     <CardTitle className="text-sm font-medium">Time of Day</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <TimeOfDayChart data={scansOverTime}  />
+                    <TimeOfDayChart data={scansOverTime} />
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -297,7 +273,7 @@ export default function QrCodeDetailsPage({data}:any) {
                         {scansByDevice?.map((item) => (
                           <div key={item.device} className="flex items-center">
                             <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                             {getDeviceIcon(item.device)}
+                              {getDeviceIcon(item.device)}
                             </div>
                             <div className="w-full space-y-2">
                               <div className="flex items-center justify-between">
@@ -317,7 +293,7 @@ export default function QrCodeDetailsPage({data}:any) {
                         ))}
                       </div>
                       <div className="flex items-center justify-center">
-                        <DeviceBreakdownChart  data={scansByDevice}/>
+                        <DeviceBreakdownChart data={scansByDevice} />
                       </div>
                     </div>
                   </CardContent>
@@ -351,7 +327,7 @@ export default function QrCodeDetailsPage({data}:any) {
                         ))}
                       </div>
                       <div className="flex items-center justify-center">
-                        <LocationMapChart  data={scansByLocation}/>
+                        <LocationMapChart data={scansByLocation} />
                       </div>
                     </div>
                   </CardContent>
