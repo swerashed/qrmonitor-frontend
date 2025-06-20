@@ -227,7 +227,7 @@ return (
                     {searchQuery ? (
                       "No QR codes match your search"
                     ) : (
-                      <div className="flex flex-col items-center gap-2">
+                      <div className="flex flex-col items-center gap-2 min-h-96 h-full justify-center">
                         <p>You have not created any QR codes yet</p>
                         <Button
                           size="sm"

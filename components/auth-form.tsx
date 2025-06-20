@@ -1,11 +1,9 @@
 "use client"
-
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Loader2 } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -76,17 +74,17 @@ export function AuthForm() {
     try {
       const loginResponse = await signInUser(data)
       if (loginResponse.success) {
-        toast(loginResponse.message || "Login successful", {
+        toast.success(loginResponse.message || "Login successful", {
           description: "You have been logged in successfully.",
         })
         router.push("/dashboard")
       } else {
-        toast(loginResponse.message || "Login failed", {
+        toast.error(loginResponse.message || "Login failed", {
           description: "Invalid email or password. Please try again.",
         })
       }
     } catch (error) {
-      toast("Login failed", {
+      toast.error("Login failed", {
         description: "Something went wrong. Please try again.",
       })
     } finally {
@@ -102,20 +100,20 @@ export function AuthForm() {
       const signUpResponse = await signUpUser(data)
       if (signUpResponse.success) {
         // Simulate successful signup
-        toast("Signup successful", {
+        toast.success("Signup successful", {
           description: "Your account has been created successfully.",
         })
 
         handleTabChange("login")
       } else {
-        toast(signUpResponse.message || "Signup failed", {
+        toast.error(signUpResponse.message || "Signup failed", {
           description: "Please try again.",
         })
       }
 
 
     } catch (error) {
-      toast("Account Creation Failed!", {
+      toast.error("Account Creation Failed!", {
         description: "An error occurred. Please try again.",
       })
     } finally {
@@ -181,15 +179,7 @@ export function AuthForm() {
                   {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   {isLoading ? "Logging in..." : "Login"}
                 </Button>
-                <div className="text-center text-sm text-muted-foreground">
-                  <p>
-                    Demo credentials:
-                    <br />
-                    Email: user@example.com
-                    <br />
-                    Password: password123
-                  </p>
-                </div>
+
               </form>
             </Form>
           </TabsContent>

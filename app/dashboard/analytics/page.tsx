@@ -9,6 +9,7 @@ import { LocationMapChart } from "@/components/charts/location-map-chart"
 import { TopQrCodesChart } from "@/components/charts/top-qr-codes-chart"
 import { BrowserChart } from "@/components/charts/browser-chart"
 import { getDashboardAnalytics } from "@/services/QRCodeServices"
+import { getDeviceIcon } from "@/hooks/getDeviceIcon"
 
 export default async function AnalyticsPage() {
   const analyticsDataRow = await getDashboardAnalytics()
@@ -94,20 +95,30 @@ export default async function AnalyticsPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {data?.topCountries?.map((item:any) => (
-                    <div key={item.country} className="flex items-center">
-                      <div className="w-full space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">{item.country}</span>
-                          <span className="text-sm text-muted-foreground">{item.count} scans</span>
-                        </div>
-                        <div className="h-2 w-full rounded-full bg-muted">
-                          <div className="h-2 rounded-full bg-primary" style={{ width: `${item.percentage}%` }}></div>
+                  {Array.isArray(data?.topCountries) && data.topCountries.length > 0 ? (
+                    data.topCountries.map((item: any) => (
+                      <div key={item.country} className="flex items-center">
+                        <div className="w-full space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium">{item.country}</span>
+                            <span className="text-sm text-muted-foreground">{item.count} scans</span>
+                          </div>
+                          <div className="h-2 w-full rounded-full bg-muted">
+                            <div
+                              className="h-2 rounded-full bg-primary"
+                              style={{ width: `${item.percentage}%` }}
+                            ></div>
+                          </div>
                         </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="h-full min-h-40 w-full flex items-center justify-center text-sm text-muted-foreground">
+                      No country data available
                     </div>
-                  ))}
+                  )}
                 </div>
+
               </CardContent>
             </Card>
           </div>
@@ -121,7 +132,7 @@ export default async function AnalyticsPage() {
               </CardHeader>
               <CardContent>
                 <div className="h-[300px] w-full">
-                  <DeviceBreakdownChart data={data?.scanByDevice}/>
+                  <DeviceBreakdownChart data={data?.scanByDevice} />
                 </div>
               </CardContent>
             </Card>
@@ -131,28 +142,37 @@ export default async function AnalyticsPage() {
                 <CardDescription>Detailed breakdown by device</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {data?.scanByDevice.map((item:any) => (
-                    <div key={item.device} className="flex items-center">
-                      <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                        {/* <item.icon className="h-4 w-4 text-primary" /> */}
-                        {/* todo: need to add icons  */}
-                      </div>
-                      <div className="w-full space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">{item.device}</span>
-                          <span className="text-sm text-muted-foreground">
-                            {item.count} scans ({item.percentage}%)
-                          </span>
+                {Array.isArray(data?.scanByDevice) && data.scanByDevice.length > 0 ? (
+                  <div className="space-y-4">
+                    {data.scanByDevice.map((item: any) => (
+                      <div key={item.device} className="flex items-center">
+                        <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                          {getDeviceIcon(item.device)}
                         </div>
-                        <div className="h-2 w-full rounded-full bg-muted">
-                          <div className="h-2 rounded-full bg-primary" style={{ width: `${item.percentage}%` }}></div>
+                        <div className="w-full space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium">{item.device}</span>
+                            <span className="text-sm text-muted-foreground">
+                              {item.count} scans ({item.percentage}%)
+                            </span>
+                          </div>
+                          <div className="h-2 w-full rounded-full bg-muted">
+                            <div
+                              className="h-2 rounded-full bg-primary"
+                              style={{ width: `${item.percentage}%` }}
+                            ></div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="h-[150px] w-full flex items-center justify-center text-sm text-muted-foreground">
+                    No device data available
+                  </div>
+                )}
               </CardContent>
+
             </Card>
           </div>
           <Card>
@@ -161,8 +181,15 @@ export default async function AnalyticsPage() {
               <CardDescription>Breakdown of scans by browser</CardDescription>
             </CardHeader>
             <CardContent>
-              <BrowserChart data={data?.browserDistribution} />
+              {Array.isArray(data?.browserDistribution) && data.browserDistribution.length > 0 ? (
+                <BrowserChart data={data.browserDistribution} />
+              ) : (
+                <div className="h-[200px] w-full flex items-center justify-center text-sm text-muted-foreground">
+                  No browser data available
+                </div>
+              )}
             </CardContent>
+
           </Card>
         </TabsContent>
         <TabsContent value="locations" className="space-y-4">
@@ -173,7 +200,7 @@ export default async function AnalyticsPage() {
             </CardHeader>
             <CardContent className="flex items-center justify-center">
               <div className="h-[400px] w-full max-w-3xl">
-                <LocationMapChart data={data?.scanByLocation}/>
+                <LocationMapChart data={data?.scanByLocation} />
               </div>
             </CardContent>
           </Card>
@@ -184,27 +211,37 @@ export default async function AnalyticsPage() {
                 <CardDescription>Countries with the most scans</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {data?.topCountries?.map((item:any) => (
-                    <div key={item.country} className="flex items-center">
-                      <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                        <Globe className="h-4 w-4 text-primary" />
-                      </div>
-                      <div className="w-full space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">{item.country}</span>
-                          <span className="text-sm text-muted-foreground">
-                            {item.count} scans ({item.percentage}%)
-                          </span>
+                {Array.isArray(data?.topCountries) && data.topCountries.length > 0 ? (
+                  <div className="space-y-4">
+                    {data.topCountries.map((item: any) => (
+                      <div key={item.country} className="flex items-center">
+                        <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                          <Globe className="h-4 w-4 text-primary" />
                         </div>
-                        <div className="h-2 w-full rounded-full bg-muted">
-                          <div className="h-2 rounded-full bg-primary" style={{ width: `${item.percentage}%` }}></div>
+                        <div className="w-full space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium">{item.country}</span>
+                            <span className="text-sm text-muted-foreground">
+                              {item.count} scans ({item.percentage}%)
+                            </span>
+                          </div>
+                          <div className="h-2 w-full rounded-full bg-muted">
+                            <div
+                              className="h-2 rounded-full bg-primary"
+                              style={{ width: `${item.percentage}%` }}
+                            ></div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="h-[150px] w-full flex items-center justify-center text-sm text-muted-foreground">
+                    No country data available
+                  </div>
+                )}
               </CardContent>
+
             </Card>
             <Card>
               <CardHeader>
@@ -212,27 +249,37 @@ export default async function AnalyticsPage() {
                 <CardDescription>Cities with the most scans</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {data?.topCities?.map((item:any) => (
-                    <div key={item.city} className="flex items-center">
-                      <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                        <Globe className="h-4 w-4 text-primary" />
-                      </div>
-                      <div className="w-full space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">{item.city}</span>
-                          <span className="text-sm text-muted-foreground">
-                            {item.count} scans ({item.percentage}%)
-                          </span>
+                {Array.isArray(data?.topCities) && data.topCities.length > 0 ? (
+                  <div className="space-y-4">
+                    {data.topCities.map((item: any) => (
+                      <div key={item.city} className="flex items-center">
+                        <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                          <Globe className="h-4 w-4 text-primary" />
                         </div>
-                        <div className="h-2 w-full rounded-full bg-muted">
-                          <div className="h-2 rounded-full bg-primary" style={{ width: `${item.percentage}%` }}></div>
+                        <div className="w-full space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium">{item.city}</span>
+                            <span className="text-sm text-muted-foreground">
+                              {item.count} scans ({item.percentage}%)
+                            </span>
+                          </div>
+                          <div className="h-2 w-full rounded-full bg-muted">
+                            <div
+                              className="h-2 rounded-full bg-primary"
+                              style={{ width: `${item.percentage}%` }}
+                            ></div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="h-[150px] w-full flex items-center justify-center text-sm text-muted-foreground">
+                    No city data available
+                  </div>
+                )}
               </CardContent>
+
             </Card>
           </div>
         </TabsContent>
@@ -243,11 +290,18 @@ export default async function AnalyticsPage() {
               <CardDescription>QR codes with the most scans</CardDescription>
             </CardHeader>
             <CardContent>
-              <TopQrCodesChart data={data?.topQRCodes}/>
+              {Array.isArray(data?.topQRCodes) && data.topQRCodes.length > 0 ? (
+                <TopQrCodesChart data={data.topQRCodes} />
+              ) : (
+                <div className="h-[200px] w-full flex items-center justify-center text-sm text-muted-foreground">
+                  No QR code data available
+                </div>
+              )}
             </CardContent>
+
           </Card>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {data?.topQRCodes?.map((qr:any, index:any) => (
+            {data?.topQRCodes?.map((qr: any, index: any) => (
               <Card key={index}>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium">{qr.name}</CardTitle>

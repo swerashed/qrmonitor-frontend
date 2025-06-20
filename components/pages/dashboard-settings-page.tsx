@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Bell, Copy, Key, Lock, Save } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -8,14 +8,23 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
+import { useTheme } from "next-themes"
+import { toast } from "sonner"
 
-export default function SettingsPage({data}:any) {
+export default function SettingsPage({ data }: any) {
   const [apiKey, setApiKey] = useState("CLEANED_SECRET")
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
+  // Fix hydration issue
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null
   const copyApiKey = () => {
     navigator.clipboard.writeText(apiKey)
     // toast({
@@ -33,10 +42,9 @@ export default function SettingsPage({data}:any) {
   }
 
   const saveSettings = () => {
-    // toast({
-    //   title: "Settings Saved",
-    //   description: "Your settings have been saved successfully.",
-    // })
+    toast.success("Signup successful", {
+      description: "Your account has been created successfully.",
+    })
   }
 
   return (
@@ -60,19 +68,19 @@ export default function SettingsPage({data}:any) {
             <CardContent className="space-y-4">
               <div className="grid gap-2">
                 <Label htmlFor="name">Name</Label>
-                <Input id="name" defaultValue={data.data.name} />
+                <Input disabled id="name" defaultValue={data.data.name} />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" defaultValue={data.data.email} />
+                <Input disabled id="email" type="email" defaultValue={data.data.email} />
               </div>
-              <div className="grid gap-2">
+              {/* <div className="grid gap-2">
                 <Label htmlFor="company">Company</Label>
                 <Input id="company" defaultValue="Acme Inc" />
-              </div>
+              </div> */}
             </CardContent>
             <CardFooter>
-              <Button onClick={saveSettings}>
+              <Button disabled onClick={saveSettings}>
                 <Save className="mr-2 h-4 w-4" />
                 Save Changes
               </Button>
@@ -86,19 +94,19 @@ export default function SettingsPage({data}:any) {
             <CardContent className="space-y-4">
               <div className="grid gap-2">
                 <Label htmlFor="current-password">Current Password</Label>
-                <Input id="current-password" type="password" />
+                <Input disabled autoComplete="off"  id="current-password" type="password" />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="new-password">New Password</Label>
-                <Input id="new-password" type="password" />
+                <Input disabled  autoComplete="off" id="new-password" type="password" />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="confirm-password">Confirm New Password</Label>
-                <Input id="confirm-password" type="password" />
+                <Input disabled autoComplete="off"  id="confirm-password" type="password" />
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={saveSettings}>
+              <Button disabled onClick={saveSettings}>
                 <Lock className="mr-2 h-4 w-4" />
                 Update Password
               </Button>
@@ -112,7 +120,7 @@ export default function SettingsPage({data}:any) {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label>Theme</Label>
-                <RadioGroup defaultValue="system">
+                <RadioGroup defaultValue={theme} onValueChange={setTheme}>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="light" id="theme-light" />
                     <Label htmlFor="theme-light">Light</Label>
@@ -127,21 +135,7 @@ export default function SettingsPage({data}:any) {
                   </div>
                 </RadioGroup>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="language">Language</Label>
-                <Select defaultValue="en">
-                  <SelectTrigger id="language">
-                    <SelectValue placeholder="Select language" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="fr">French</SelectItem>
-                    <SelectItem value="de">German</SelectItem>
-                    <SelectItem value="es">Spanish</SelectItem>
-                    <SelectItem value="pt">Portuguese</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+
             </CardContent>
             <CardFooter>
               <Button onClick={saveSettings}>
@@ -190,7 +184,7 @@ export default function SettingsPage({data}:any) {
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={saveSettings}>
+              <Button disabled onClick={saveSettings}>
                 <Bell className="mr-2 h-4 w-4" />
                 Save Notification Settings
               </Button>
@@ -208,7 +202,7 @@ export default function SettingsPage({data}:any) {
                 <Label htmlFor="api-key">API Key</Label>
                 <div className="flex items-center gap-2">
                   <Input id="api-key" value={apiKey} readOnly type="password" />
-                  <Button variant="outline" size="icon" onClick={copyApiKey}>
+                  <Button disabled variant="outline" size="icon" onClick={copyApiKey}>
                     <Copy className="h-4 w-4" />
                     <span className="sr-only">Copy API Key</span>
                   </Button>
@@ -217,18 +211,18 @@ export default function SettingsPage({data}:any) {
                   Your API key provides full access to your account. Keep it secure.
                 </p>
               </div>
-              <Button variant="outline" onClick={regenerateApiKey}>
+              <Button disabled variant="outline" onClick={regenerateApiKey}>
                 <Key className="mr-2 h-4 w-4" />
                 Regenerate API Key
               </Button>
               <div className="space-y-2">
                 <Label htmlFor="webhook-url">Webhook URL</Label>
-                <Input id="webhook-url" placeholder="https://your-server.com/webhook" />
+                <Input disabled id="webhook-url" placeholder="https://your-server.com/webhook" />
                 <p className="text-sm text-muted-foreground">We'll send scan events to this URL in real-time.</p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="allowed-domains">Allowed Domains</Label>
-                <Textarea
+                <Textarea disabled
                   id="allowed-domains"
                   placeholder="example.com&#10;app.example.com"
                   className="min-h-[100px]"
@@ -239,7 +233,7 @@ export default function SettingsPage({data}:any) {
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={saveSettings}>
+              <Button disabled onClick={saveSettings}>
                 <Save className="mr-2 h-4 w-4" />
                 Save API Settings
               </Button>
