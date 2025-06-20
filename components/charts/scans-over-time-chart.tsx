@@ -18,7 +18,7 @@ export function ScansOverTimeChart({ data }: any) {
   
 
   const renderLegend = () => (
-    <div className="mt-4 flex justify-center text-xs text-muted-foreground uppercase">
+    <div className="mt-4 flex justify-center text-xs text-muted-foreground uppercase pb-5">
       <div className="flex items-center gap-2">
         <span className="h-2 w-2 rounded-full bg-primary inline-block" />
         <span>Scans Over Time</span>

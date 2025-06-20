@@ -76,7 +76,9 @@ const DashboardMainPage = () => {
                             <CardTitle>Scan Activity</CardTitle>
                             <CardDescription>Scan activity over the last 30 days</CardDescription>
                         </CardHeader>
+                  
                         <ScansOverTimeChart data={dashboardData?.scanActivity} />
+                     
 
                     </Card>
                     {/* <Card className="flex justify-center items-center">
