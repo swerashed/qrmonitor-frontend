@@ -110,6 +110,21 @@ export const getSingleQRCode = async (id: string) => {
     data: response.data.data
   }
 }
+export const getQRCodeScanSettings = async (id: string) => {
+  if (!id) {
+    return {
+      success: false,
+      message: "No id provided"
+    }
+  }
+
+  const response = await app_axios.get(`/qr-code/get-single-qr/settings/${id}`)
+  return {
+    success: true,
+    message: "QR code settings fetched successfully",
+    data: response.data.data
+  }
+}
 
 
 export const deleteQrCode = async (id: string) => {
@@ -152,6 +167,5 @@ export const getDashboardAnalytics = async () => {
 export const getAllQRCode = async () => {
   const response = await app_axios.get(`/qr-code/get-all-qr`)
   return response.data
-
 }
 
