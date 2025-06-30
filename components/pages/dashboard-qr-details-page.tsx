@@ -195,7 +195,9 @@ export default function QrCodeDetailsPage() {
                   )}
                 </div>
               </div>
-              <div className="flex items-center justify-between">
+
+              {/* TODO: Need to enable and disable option later  */}
+              <div className="hidden items-center justify-between">
                 <div className="space-y-0.5">
                   <Label htmlFor="tracking">Tracking</Label>
                   <div className="text-sm text-muted-foreground">

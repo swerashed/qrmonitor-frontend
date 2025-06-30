@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import { getQRCodeScanSettings, scanQRCode } from '@/services/QRCodeServices';
+import { scanQRCodeClient } from '@/hooks/scanQRCodeClient';
 
 type Props = {
   qrId: string;
@@ -34,7 +35,7 @@ const ScanClient = ({ qrId }: Props) => {
         }
 
         setStatus('Redirecting...');
-        const scanRes = await scanQRCode({ qrId, fingerprint });
+        const scanRes = await scanQRCodeClient({ qrId, fingerprint });
 
         if (scanRes?.success) {
           setStatus('Redirecting...');
@@ -45,7 +46,6 @@ const ScanClient = ({ qrId }: Props) => {
           setStatus('Scan failed.');
         }
       } catch (err) {
-        console.error(err);
         setStatus('Error during scan.');
       }
     };
