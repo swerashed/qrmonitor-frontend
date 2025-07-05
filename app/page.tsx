@@ -120,11 +120,11 @@ export default function LandingPage() {
                   <div className="relative bg-card border rounded-2xl shadow-lg p-8 h-full flex items-center justify-center">
                     <div className="relative w-3/4 aspect-square">
                       <Image
-                        src="/placeholder.svg?height=300&width=300"
+                        src="/qr-code.png"
                         alt="Animated QR Code"
                         width={300}
                         height={300}
-                        className="object-contain"
+                        className="object-contain rounded-lg"
                       />
                       <div
                         className={cn(
@@ -271,11 +271,11 @@ export default function LandingPage() {
                   </div>
                   <div className="relative aspect-square md:aspect-auto">
                     <Image
-                      src="/placeholder.svg?height=400&width=500"
+                      src="/dashboard.png"
                       alt="Analytics Dashboard"
                       width={500}
                       height={400}
-                      className="object-cover h-full w-full"
+                      className="object-fill h-full w-full"
                     />
                     <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent opacity-60"></div>
                   </div>
