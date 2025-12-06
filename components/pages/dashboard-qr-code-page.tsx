@@ -1,5 +1,6 @@
 "use client"
-import {  useEffect, useState } from "react"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { format } from "date-fns"
 import { Download, Edit, Filter, MoreHorizontal, Plus, QrCode, Search, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -16,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { CreateQrCodeModal } from "@/components/create-qr-code-modal"
 import { cn } from "@/lib/utils"
 import { deleteQrCode, getAllQRCode } from "@/services/QRCodeServices"
 import QRCodeStyling from "qr-code-styling"
@@ -26,20 +26,21 @@ import QRCodeDashboardLoading from "@/app/dashboard/qr-codes/loading"
 import { useQuery } from "@tanstack/react-query"
 
 
+
 export default function DashboardQrCodesPage() {
+  const router = useRouter()
   const { data, isError, isLoading, error, isSuccess, refetch } = useQuery({
     queryKey: ["getAllQRCode"],
     queryFn: getAllQRCode,
   })
 
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [date, setDate] = useState<Date>()
   const [searchQuery, setSearchQuery] = useState("")
   const qrCodes = data?.data || []
 
 
   if (isLoading) {
-    return <QRCodeDashboardLoading/>
+    return <QRCodeDashboardLoading />
   }
   if (isError) {
     return (
@@ -50,21 +51,21 @@ export default function DashboardQrCodesPage() {
     )
   }
 
-  const filteredQrCodes = qrCodes?.filter((qr:any) => 
+  const filteredQrCodes = qrCodes?.filter((qr: any) =>
     qr?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase())
   )
 
-  const handleDownload = (qr:any)=> {
+  const handleDownload = (qr: any) => {
     const qrCode = new QRCodeStyling(qr.settings)
     qrCode.download({
       extension: "png"
     });
   }
 
-  const handleDeleteQr = async (id:string) => {
+  const handleDeleteQr = async (id: string) => {
     try {
       const response = await deleteQrCode(id)
-      if(response.success) {
+      if (response.success) {
         toast.success("Delete successful", {
           description: "Your QR code has been created successfully.",
         })
@@ -83,14 +84,14 @@ export default function DashboardQrCodesPage() {
   }
 
 
-return (
+  return (
     <div className="flex flex-col gap-4 p-4 md:gap-8 md:p-8">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">QR Codes</h1>
           <p className="text-muted-foreground">Manage and track your dynamic QR codes</p>
         </div>
-        <Button onClick={() => setIsCreateModalOpen(true)}>
+        <Button onClick={() => router.push("/dashboard/qr-codes/create")}>
           <Plus className="mr-2 h-4 w-4" />
           Create QR Code
         </Button>
@@ -150,11 +151,11 @@ return (
             </TableHeader>
             <TableBody>
               {filteredQrCodes.length > 0 ? (
-                filteredQrCodes.map((qr:any) => (
+                filteredQrCodes.map((qr: any) => (
                   <TableRow key={qr.id}>
                     <TableCell>
                       <div className="flex h-12 w-12 items-center justify-center rounded-md border">
-                      <QrCode className="w-8 h-8"/>
+                        <QrCode className="w-8 h-8" />
                       </div>
                     </TableCell>
                     <TableCell className="font-medium">
@@ -173,7 +174,7 @@ return (
                       </a>
                     </TableCell>
                     <TableCell className="text-right">{qr.totalScans}</TableCell>
-                    <TableCell>{ qr?.lastScans ? format(new Date(qr?.lastScans), "MMM d, yyyy") : "Not yet scanned"}</TableCell>
+                    <TableCell>{qr?.lastScans ? format(new Date(qr?.lastScans), "MMM d, yyyy") : "Not yet scanned"}</TableCell>
                     <TableCell>{format(new Date(qr.createdAt), "MMM d, yyyy")}</TableCell>
                     <TableCell>
                       <span
@@ -188,14 +189,14 @@ return (
                       </span>
                     </TableCell>
                     <TableCell className="text-right">
-                      <DropdownMenu> 
+                      <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon">
                             <MoreHorizontal className="h-4 w-4" />
                             <span className="sr-only">Actions</span>
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end"  className="bg-background">
+                        <DropdownMenuContent align="end" className="bg-background">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuItem asChild>
                             <a href={`/dashboard/qr-codes/${qr.id}`}>
@@ -203,14 +204,14 @@ return (
                               Edit
                             </a>
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={()=>{
+                          <DropdownMenuItem onClick={() => {
                             handleDownload(qr)
                           }}>
                             <Download className="mr-2 h-4 w-4" />
                             Download
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={()=>{
+                          <DropdownMenuItem onClick={() => {
                             handleDeleteQr(qr.id)
                           }} className="text-destructive focus:text-destructive">
                             <Trash2 className="mr-2 h-4 w-4" />
@@ -231,7 +232,7 @@ return (
                         <p>You have not created any QR codes yet</p>
                         <Button
                           size="sm"
-                          onClick={() => setIsCreateModalOpen(true)}
+                          onClick={() => router.push("/dashboard/qr-codes/create")}
                         >
                           <Plus className="mr-2 h-4 w-4" />
                           Create Your First QR Code
@@ -245,7 +246,6 @@ return (
           </Table>
         </CardContent>
       </Card>
-      <CreateQrCodeModal refetch={refetch} open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen} />
     </div>
   )
 }
