@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { Check, ChevronDown, Moon, QrCode, Sun, BarChart3, Globe, Smartphone, Clock, TrendingUp, Lock } from "lucide-react"
+import { Check, QrCode, BarChart3, Globe, Smartphone, Clock, TrendingUp, Lock, Menu } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -11,13 +11,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useTheme } from "next-themes"
 import { subscribeUser, unsubscribeUser } from "./action"
 import { QrLifecycleDemo } from "@/components/qr-lifecycle-demo"
 import { AnalyticsPreview } from "@/components/analytics-preview"
 
 export default function LandingPage() {
-  const { theme, setTheme } = useTheme()
   const [isQrHovered, setIsQrHovered] = useState(false)
 
   // QR code animation
@@ -41,37 +41,52 @@ export default function LandingPage() {
             <Link href="#features" className="text-sm font-medium hover:text-primary">
               Features
             </Link>
-            <Link href="#demo" className="text-sm font-medium hover:text-primary">
-              Demo
-            </Link>
-            <Link href="#analytics" className="text-sm font-medium hover:text-primary">
-              Analytics
-            </Link>
             <Link href="#testimonials" className="text-sm font-medium hover:text-primary">
               Testimonials
             </Link>
             <Link href="#pricing" className="text-sm font-medium hover:text-primary">
               Pricing
             </Link>
-            <Link href="#faq" className="text-sm font-medium hover:text-primary">
-              FAQ
-            </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              aria-label="Toggle theme"
-            >
-              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
             <Button className="hidden md:inline-flex">
               <Link href="/dashboard">Get Started Free</Link>
             </Button>
-            <Button variant="outline" size="icon" className="md:hidden">
-              <ChevronDown className="h-4 w-4" />
-            </Button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="icon" className="md:hidden">
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right">
+                <nav className="flex flex-col gap-4 mt-8">
+                  <Link href="#features" className="text-lg font-medium hover:text-primary">
+                    Features
+                  </Link>
+                  <Link href="#demo" className="text-lg font-medium hover:text-primary">
+                    Demo
+                  </Link>
+                  <Link href="#analytics" className="text-lg font-medium hover:text-primary">
+                    Analytics
+                  </Link>
+                  <Link href="#testimonials" className="text-lg font-medium hover:text-primary">
+                    Testimonials
+                  </Link>
+                  <Link href="#pricing" className="text-lg font-medium hover:text-primary">
+                    Pricing
+                  </Link>
+                  <Link href="#faq" className="text-lg font-medium hover:text-primary">
+                    FAQ
+                  </Link>
+                  <div className="pt-4">
+                    <Button className="w-full" asChild>
+                      <Link href="/dashboard">Get Started Free</Link>
+                    </Button>
+                  </div>
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>
@@ -101,9 +116,7 @@ export default function LandingPage() {
                     <Link href="/dashboard">Get Started Free</Link>
 
                   </Button>
-                  <Button size="lg" variant="outline">
-                    See Demo
-                  </Button>
+
                 </div>
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 20 }}
@@ -446,7 +459,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="mx-auto max-w-3xl py-12">
-              <Accordion type="single" collapsible className="w-full">
+              <Accordion type="single" collapsible className="w-full text-left">
                 {faqs.map((faq, index) => (
                   <motion.div
                     key={index}
@@ -483,115 +496,43 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t py-12 md:py-16 lg:py-20">
+      <footer className="border-t pb-4 pt-12 md:pt-16 lg:pt-20">
         <div className="container px-4 md:px-6">
-          <div className="grid gap-8 lg:grid-cols-4">
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-col items-center gap-4 justify-center">
+              <div className="flex justify-center items-center gap-2">
                 <QrCode className="h-6 w-6 text-primary" />
                 <span className="text-xl font-bold">QrMonitor</span>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-center text-muted-foreground max-w-[300px]">
                 Dynamic QR codes that adapt to your needs. Track, analyze, and optimize your QR code performance.
               </p>
             </div>
             <div className="space-y-4">
-              <h3 className="text-lg font-medium">Product</h3>
-              <ul className="space-y-2 text-sm">
+              <ul className="text-sm flex gap-4 justify-center">
                 <li>
-                  <Link href="#features" className="text-muted-foreground hover:text-foreground">
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#pricing" className="text-muted-foreground hover:text-foreground">
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-muted-foreground hover:text-foreground">
-                    API
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-muted-foreground hover:text-foreground">
-                    Integrations
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Resources</h3>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link href="#" className="text-muted-foreground hover:text-foreground">
-                    Documentation
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-muted-foreground hover:text-foreground">
-                    Guides
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-muted-foreground hover:text-foreground">
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-muted-foreground hover:text-foreground">
-                    Support
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Company</h3>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link href="#" className="text-muted-foreground hover:text-foreground">
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-muted-foreground hover:text-foreground">
-                    Careers
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-muted-foreground hover:text-foreground">
+                  <Link href="/contact" className="text-muted-foreground hover:text-foreground">
                     Contact
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-muted-foreground hover:text-foreground">
+                  <Link href="/privacy" className="text-muted-foreground hover:text-foreground">
                     Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms" className="text-muted-foreground hover:text-foreground">
+                    Terms of Service
                   </Link>
                 </li>
               </ul>
             </div>
           </div>
-          <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 md:flex-row">
+          <div className="mt-12 flex flex-col items-center justify-center gap-4 border-t pt-8">
             <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} QrMonitor. All rights reserved.</p>
-            <div className="flex gap-4">
-              <Link href="#" className="text-muted-foreground hover:text-foreground">
-                <span className="sr-only">Twitter</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-5 w-5"
-                >
-                  <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
-                </svg>
-              </Link>
-              <Link href="#" className="text-muted-foreground hover:text-foreground">
+            <div className="flex gap-4 justify-center items-center">
+              <p className="text-sm text-muted-foreground">Devloped by •</p>
+              <Link href="https://www.linkedin.com/in/swerashed" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
                 <span className="sr-only">LinkedIn</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -610,7 +551,7 @@ export default function LandingPage() {
                   <circle cx="4" cy="4" r="2"></circle>
                 </svg>
               </Link>
-              <Link href="#" className="text-muted-foreground hover:text-foreground">
+              <Link href="https://github.com/swerashed" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
                 <span className="sr-only">GitHub</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
