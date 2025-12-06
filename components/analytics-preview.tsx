@@ -21,7 +21,7 @@ export function AnalyticsPreview() {
     return (
         <div className="w-full h-full p-6 space-y-6">
             {/* Stats Grid */}
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {stats.map((stat, index) => (
                     <motion.div
                         key={stat.label}
@@ -31,13 +31,13 @@ export function AnalyticsPreview() {
                     >
                         <Card className="p-4 bg-gradient-to-br from-background to-muted/30">
                             <div className="flex items-center gap-3">
-                                <div className={`p-2 rounded-lg bg-muted ${stat.color}`}>
+                                <div className={`p-2 rounded-lg bg-muted flex-shrink-0 ${stat.color}`}>
                                     <stat.icon className="w-5 h-5" />
                                 </div>
-                                <div>
+                                <div className="min-w-0 flex-1">
                                     <p className="text-xs text-muted-foreground">{stat.label}</p>
                                     <motion.p
-                                        className="text-2xl font-bold"
+                                        className="text-xl sm:text-2xl font-bold truncate"
                                         initial={{ scale: 0 }}
                                         animate={{ scale: 1 }}
                                         transition={{ delay: index * 0.1 + 0.2, type: "spring" }}
