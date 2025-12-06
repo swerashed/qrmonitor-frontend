@@ -200,9 +200,9 @@ export default function CreateQRCodePage() {
                         </Card>
                     </div>
 
-                    {/* Right Column - Preview (Fixed Position) */}
+                    {/* Right Column - Preview (Sticky) */}
                     <div className="hidden lg:block">
-                        <div className="fixed top-24 right-8 w-[calc(50%-4rem)] max-w-xl">
+                        <div className="sticky top-24">
                             <Card>
                                 <CardHeader>
                                     <CardTitle>Preview</CardTitle>
