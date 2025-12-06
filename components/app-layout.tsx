@@ -34,7 +34,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
   const [activeUser, setActiveUser] = useState({})
-  
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -45,9 +45,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         console.error("Failed to fetch user:", error);
       }
     };
-  
+
     fetchUser();
-  }, []); 
+  }, []);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -63,7 +63,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="flex flex-col gap-4 py-4">
               <Link href="/" className="flex items-center gap-2 px-2">
                 <QrCode className="h-6 w-6" />
-                <span className="text-lg font-semibold">QR Platform</span>
+                <span className="text-lg font-semibold">QrMonitor</span>
               </Link>
               <nav className="grid gap-2 px-2">
                 {navigation.map((item) => (
@@ -86,10 +86,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </Sheet>
         <Link href="/" className="flex items-center gap-2">
           <QrCode className="h-6 w-6" />
-          <span className="text-lg font-semibold hidden md:inline-flex">QR Platform</span>
+          <span className="text-lg font-semibold hidden md:inline-flex">QrMonitor</span>
         </Link>
         <div className="ml-auto flex items-center gap-4">
-              <ThemeToggleButton/>
+          <ThemeToggleButton />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full">
@@ -110,9 +110,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="flex justify-center items-center">
-                <button  className="flex justify-center items-center"  onClick={handleClientLogout}> <LogOut className="mr-2 h-4 w-4 " />
-                <span>Log out</span></button>
-               
+                <button className="flex justify-center items-center" onClick={handleClientLogout}> <LogOut className="mr-2 h-4 w-4 " />
+                  <span>Log out</span></button>
+
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { Check, ChevronDown, Moon, QrCode, Sun } from "lucide-react"
+import { Check, ChevronDown, Moon, QrCode, Sun, BarChart3, Globe, Smartphone, Clock, TrendingUp, Lock } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -12,7 +12,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useTheme } from "next-themes"
-import {subscribeUser, unsubscribeUser } from "./action"
+import { subscribeUser, unsubscribeUser } from "./action"
+import { QrLifecycleDemo } from "@/components/qr-lifecycle-demo"
+import { AnalyticsPreview } from "@/components/analytics-preview"
 
 export default function LandingPage() {
   const { theme, setTheme } = useTheme()
@@ -26,14 +28,14 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background">
-       {/* <PushNotificationManager />
+      {/* <PushNotificationManager />
        <InstallPrompt /> */}
       {/* Navbar */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
             <QrCode className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">DashQR</span>
+            <span className="text-xl font-bold">QrMonitor</span>
           </div>
           <nav className="hidden md:flex items-center gap-6">
             <Link href="#features" className="text-sm font-medium hover:text-primary">
@@ -87,11 +89,10 @@ export default function LandingPage() {
               >
                 <div className="space-y-2">
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                    Create. Track. Optimize – with Dynamic QR Codes.
+                    One QR Code. Unlimited Possibilities. Forever.
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Generate dynamic QR codes that adapt. Track scans, update destinations, and analyze performance —
-                    all in one dashboard.
+                    Create QR codes that last a lifetime. Update destinations anytime, track every scan, and never reprint again. Your QR stays the same, your destination can change.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -105,7 +106,7 @@ export default function LandingPage() {
                   </Button>
                 </div>
               </motion.div>
-              <motion.div  initial={{ opacity: 0, y: 20 }}
+              <motion.div initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }} className="flex items-center justify-center">
                 <motion.div
@@ -142,9 +143,9 @@ export default function LandingPage() {
 
         {/* Features Section */}
         <section id="features" className="py-20 bg-muted/50">
-          <motion.div  initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }} className="container px-4 md:px-6">
+          <motion.div initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }} className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-primary px-3 py-1 text-sm text-primary-foreground">
@@ -156,7 +157,7 @@ export default function LandingPage() {
                 </p>
               </div>
             </div>
-            <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-3 lg:gap-12">
+            <div className="mx-auto grid max-w-5xl items-stretch gap-6 py-12 lg:grid-cols-3 lg:gap-8">
               {features.map((feature, index) => (
                 <motion.div
                   key={index}
@@ -164,12 +165,12 @@ export default function LandingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  className="relative overflow-hidden rounded-lg border bg-background p-6"
+                  className="relative overflow-hidden rounded-lg border bg-background p-6 flex flex-col"
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
                     {feature.icon}
                   </div>
-                  <div className="mt-4 space-y-2">
+                  <div className="mt-4 space-y-2 flex-1">
                     <h3 className="text-xl font-bold">{feature.title}</h3>
                     <p className="text-muted-foreground">{feature.description}</p>
                   </div>
@@ -181,45 +182,22 @@ export default function LandingPage() {
 
         {/* Interactive Demo Section */}
         <section id="demo" className="py-20">
-          <motion.div  initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }} className="container px-4 md:px-6">
+          <motion.div initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }} className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-primary px-3 py-1 text-sm text-primary-foreground">
                   Live Demo
                 </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">See DashQR in Action</h2>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">See QrMonitor in Action</h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Watch how easy it is to update your QR code's destination in real-time.
+                  Watch how easy it is to create a QR code once and update its destination forever.
                 </p>
               </div>
             </div>
             <div className="mx-auto max-w-4xl py-12">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-                viewport={{ once: true }}
-                className="overflow-hidden rounded-xl border bg-background shadow-lg"
-              >
-                <div className="relative aspect-video w-full bg-muted">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <QrCode className="mx-auto h-16 w-16 text-primary/50" />
-                      <p className="mt-4 text-muted-foreground">Interactive demo animation would play here</p>
-                      <Button className="mt-4">Play Demo</Button>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold">Update QR Destinations Instantly</h3>
-                  <p className="mt-2 text-muted-foreground">
-                    Change where your QR code leads to without ever needing to reprint. Perfect for menus, event
-                    details, or promotional materials.
-                  </p>
-                </div>
-              </motion.div>
+              <QrLifecycleDemo />
             </div>
           </motion.div>
         </section>
@@ -232,13 +210,54 @@ export default function LandingPage() {
                 <div className="inline-block rounded-lg bg-primary px-3 py-1 text-sm text-primary-foreground">
                   Analytics
                 </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Powerful Insights</h2>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Know Your Audience. Grow Your Business.</h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Track scans, analyze user behavior, and optimize your QR code performance.
+                  Every scan tells a story. Discover who's scanning, when they're engaging, and where they're coming from. Turn data into decisions with real-time analytics that actually matter.
                 </p>
               </div>
             </div>
-            <div className="mx-auto max-w-5xl py-12">
+            <div className="mx-auto max-w-5xl py-12 space-y-12">
+
+
+              {/* Analytics Features Grid */}
+              <div className="grid gap-6 md:grid-cols-3 lg:gap-8">
+                {analyticsFeatures.map((feature, index) => {
+                  const icons = [
+                    <BarChart3 className="h-6 w-6 text-green-500 stroke-[2.5]" />,
+                    <Globe className="h-6 w-6 text-green-500 stroke-[2.5]" />,
+                    <Smartphone className="h-6 w-6 text-green-500 stroke-[2.5]" />,
+                    <Clock className="h-6 w-6 text-green-500 stroke-[2.5]" />,
+                    <TrendingUp className="h-6 w-6 text-green-500 stroke-[2.5]" />,
+                    <Lock className="h-6 w-6 text-green-500 stroke-[2.5]" />,
+                  ]
+                  const titles = [
+                    "Scan Tracking",
+                    "Geographic Insights",
+                    "Device Analytics",
+                    "Peak Times",
+                    "Conversion Metrics",
+                    "Security & Privacy",
+                  ]
+                  return (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      viewport={{ once: true }}
+                      className="flex flex-col items-center text-center p-6 rounded-lg border bg-background hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-green-50 dark:bg-green-950 mb-4">
+                        {icons[index]}
+                      </div>
+                      <h4 className="font-semibold mb-2">{titles[index]}</h4>
+                      <p className="text-sm text-muted-foreground">{feature}</p>
+                    </motion.div>
+                  )
+                })}
+              </div>
+
+              {/* Analytics Preview */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -246,39 +265,9 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 className="overflow-hidden rounded-xl border bg-background shadow-lg"
               >
-                <div className="grid gap-6 md:grid-cols-2 lg:gap-12">
-                  <div className="p-6 flex flex-col justify-center">
-                    <h3 className="text-2xl font-bold">Real-time Dashboard</h3>
-                    <p className="mt-2 text-muted-foreground">
-                      Monitor scan activity as it happens. See device types, locations, and peak usage times to optimize
-                      your campaigns.
-                    </p>
-                    <ul className="mt-4 space-y-2">
-                      {analyticsFeatures.map((feature, index) => (
-                        <motion.li
-                          key={index}
-                          initial={{ opacity: 0, x: -10 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.3, delay: index * 0.1 }}
-                          viewport={{ once: true }}
-                          className="flex items-center gap-2"
-                        >
-                          <Check className="h-5 w-5 text-primary" />
-                          <span>{feature}</span>
-                        </motion.li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="relative aspect-square md:aspect-auto">
-                    <Image
-                      src="/dashboard.png"
-                      alt="Analytics Dashboard"
-                      width={500}
-                      height={400}
-                      className="object-fill h-full w-full"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent opacity-60"></div>
-                  </div>
+
+                <div className="relative bg-gradient-to-br from-muted/50 to-background overflow-hidden">
+                  <AnalyticsPreview />
                 </div>
               </motion.div>
             </div>
@@ -295,7 +284,7 @@ export default function LandingPage() {
                 </div>
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Trusted by Businesses</h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  See what our customers are saying about DashQR.
+                  See what our customers are saying about QrMonitor.
                 </p>
               </div>
             </div>
@@ -452,7 +441,7 @@ export default function LandingPage() {
                 <div className="inline-block rounded-lg bg-primary px-3 py-1 text-sm text-primary-foreground">FAQ</div>
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Frequently Asked Questions</h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Everything you need to know about DashQR.
+                  Everything you need to know about QrMonitor.
                 </p>
               </div>
             </div>
@@ -479,7 +468,7 @@ export default function LandingPage() {
                 <CardHeader>
                   <CardTitle>Ready to get started?</CardTitle>
                   <CardDescription>
-                    Join thousands of businesses using DashQR to create dynamic QR codes.
+                    Join thousands of businesses using QrMonitor to create dynamic QR codes.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -500,7 +489,7 @@ export default function LandingPage() {
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <QrCode className="h-6 w-6 text-primary" />
-                <span className="text-xl font-bold">DashQR</span>
+                <span className="text-xl font-bold">QrMonitor</span>
               </div>
               <p className="text-sm text-muted-foreground">
                 Dynamic QR codes that adapt to your needs. Track, analyze, and optimize your QR code performance.
@@ -583,7 +572,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 md:flex-row">
-            <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} DashQR. All rights reserved.</p>
+            <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} QrMonitor. All rights reserved.</p>
             <div className="flex gap-4">
               <Link href="#" className="text-muted-foreground hover:text-foreground">
                 <span className="sr-only">Twitter</span>
@@ -719,11 +708,12 @@ const features = [
 ]
 
 const analyticsFeatures = [
-  "Real-time scan tracking",
-  "Geographic location data",
-  "Device & browser analytics",
-  "Time-based usage patterns",
-  "Conversion tracking",
+  "Complete scan history with timestamps",
+  "Location data by country & city",
+  "Device types, OS, and browsers",
+  "Hourly and daily engagement patterns",
+  "Track conversions and goals",
+  "Secure data with privacy controls",
 ]
 
 const testimonials = [
@@ -732,30 +722,52 @@ const testimonials = [
     role: "Marketing Director",
     avatar: "/placeholder.svg?height=48&width=48",
     quote:
-      "DashQR has transformed how we manage our marketing campaigns. Being able to update QR destinations on the fly is a game-changer.",
+      "QrMonitor has transformed how we manage our marketing campaigns. Being able to update QR destinations on the fly is a game-changer.",
   },
   {
     name: "Michael Chen",
     role: "Restaurant Owner",
     avatar: "/placeholder.svg?height=48&width=48",
     quote:
-      "We use DashQR for our menus. When prices or items change, we update the link without reprinting anything. The analytics help us understand customer behavior.",
+      "We use QrMonitor for our menus. When prices or items change, we update the link without reprinting anything. The analytics help us understand customer behavior.",
   },
   {
     name: "Emily Rodriguez",
     role: "Event Coordinator",
     avatar: "/placeholder.svg?height=48&width=48",
     quote:
-      "For events, DashQR is essential. We can redirect attendees to updated schedules, maps, or emergency information instantly.",
+      "For events, QrMonitor is essential. We can redirect attendees to updated schedules, maps, or emergency information instantly.",
   },
 ]
 
 const pricingPlans = [
   {
+    name: "Free",
+    monthlyPrice: 0,
+    description: "Perfect to get started with dynamic QR codes",
+    features: [
+      "Up to 6 dynamic QR codes",
+      "9 destination changes per QR",
+      "Basic analytics (30-day history)",
+      "Email support",
+      "QR code customization",
+      "Lifetime QR codes"
+    ],
+    popular: false,
+  },
+  {
     name: "Starter",
     monthlyPrice: 9,
     description: "Perfect for individuals and small projects",
-    features: ["Up to 5 dynamic QR codes", "Basic analytics", "Email support", "URL redirection", "30-day history"],
+    features: [
+      "Up to 25 dynamic QR codes",
+      "Unlimited destination changes",
+      "Advanced analytics (90-day history)",
+      "Priority email support",
+      "Custom branding",
+      "Bulk operations",
+      "Lifetime QR codes"
+    ],
     popular: false,
   },
   {
@@ -763,33 +775,37 @@ const pricingPlans = [
     monthlyPrice: 29,
     description: "Ideal for growing businesses",
     features: [
-      "Up to 50 dynamic QR codes",
-      "Advanced analytics",
+      "Up to 100 dynamic QR codes",
+      "Unlimited destination changes",
+      "Advanced analytics (1-year history)",
       "Priority support",
       "Custom branding",
-      "1-year history",
       "API access",
+      "Team collaboration (3 users)",
+      "White-label options",
+      "Lifetime QR codes"
     ],
     popular: true,
   },
-  {
-    name: "Enterprise",
-    monthlyPrice: 99,
-    description: "For large organizations with advanced needs",
-    features: [
-      "Unlimited QR codes",
-      "Enterprise analytics",
-      "Dedicated support",
-      "Custom integrations",
-      "Unlimited history",
-      "Team management",
-      "SLA guarantee",
-    ],
-    popular: false,
-  },
+
 ]
 
 const faqs = [
+  {
+    question: "Do my QR codes expire?",
+    answer:
+      "Never! Your QR codes work forever, even if you downgrade or cancel your subscription. Once created, your QR code is yours for life.",
+  },
+  {
+    question: "Can I change my QR code's destination after printing?",
+    answer:
+      "Yes! That's the power of dynamic QR codes. Update the destination anytime from your dashboard without reprinting. The Free plan includes 9 changes per QR code, while paid plans offer unlimited changes.",
+  },
+  {
+    question: "What happens when I reach my 9 destination changes on the Free plan?",
+    answer:
+      "You can upgrade to a paid plan for unlimited changes, or the QR will continue working with its last destination. Your QR code never stops working!",
+  },
   {
     question: "What is a dynamic QR code?",
     answer:
@@ -798,12 +814,12 @@ const faqs = [
   {
     question: "Do I need to install any software?",
     answer:
-      "No, DashQR is a cloud-based platform. You only need a web browser to create, manage, and analyze your QR codes.",
+      "No, QrMonitor is a cloud-based platform. You only need a web browser to create, manage, and analyze your QR codes.",
   },
   {
     question: "Can I customize the appearance of my QR codes?",
     answer:
-      "Yes, DashQR allows you to customize colors, add logos, and adjust the design of your QR codes while ensuring they remain scannable.",
+      "Yes, QrMonitor allows you to customize colors, add logos, and adjust the design of your QR codes while ensuring they remain scannable.",
   },
   {
     question: "What kind of analytics do you provide?",
@@ -818,17 +834,17 @@ const faqs = [
   {
     question: "How secure are the QR codes?",
     answer:
-      "DashQR uses HTTPS for all redirects and implements security measures to prevent unauthorized access to your QR code management.",
+      "QrMonitor uses HTTPS for all redirects and implements security measures to prevent unauthorized access to your QR code management.",
   },
 ]
 
 function urlBase64ToUint8Array(base64String: string) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
- 
+
   const rawData = window.atob(base64)
   const outputArray = new Uint8Array(rawData.length)
- 
+
   for (let i = 0; i < rawData.length; ++i) {
     outputArray[i] = rawData.charCodeAt(i)
   }
@@ -842,14 +858,14 @@ function PushNotificationManager() {
     null
   )
   const [message, setMessage] = useState('')
- 
+
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       setIsSupported(true)
       registerServiceWorker()
     }
   }, [])
- 
+
   async function registerServiceWorker() {
     const registration = await navigator.serviceWorker.register('/sw.js', {
       scope: '/',
@@ -858,7 +874,7 @@ function PushNotificationManager() {
     const sub = await registration.pushManager.getSubscription()
     setSubscription(sub)
   }
- 
+
   async function subscribeToPush() {
     const registration = await navigator.serviceWorker.ready
     const sub = await registration.pushManager.subscribe({
@@ -871,24 +887,24 @@ function PushNotificationManager() {
     const serializedSub = JSON.parse(JSON.stringify(sub))
     await subscribeUser(serializedSub)
   }
- 
+
   async function unsubscribeFromPush() {
     await subscription?.unsubscribe()
     setSubscription(null)
     await unsubscribeUser()
   }
- 
+
   // async function sendTestNotification() {
   //   if (subscription) {
   //     await sendNotification(message)
   //     setMessage('')
   //   }
   // }
- 
+
   if (!isSupported) {
     return <p>Push notifications are not supported in this browser.</p>
   }
- 
+
   return (
     <div>
       <h3>Push Notifications</h3>
@@ -918,19 +934,19 @@ function PushNotificationManager() {
 function InstallPrompt() {
   const [isIOS, setIsIOS] = useState(false)
   const [isStandalone, setIsStandalone] = useState(false)
- 
+
   useEffect(() => {
     setIsIOS(
       /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
     )
- 
+
     setIsStandalone(window.matchMedia('(display-mode: standalone)').matches)
   }, [])
- 
+
   if (isStandalone) {
     return null // Don't show install button if already installed
   }
- 
+
   return (
     <div>
       <h3>Install App</h3>
@@ -952,4 +968,4 @@ function InstallPrompt() {
     </div>
   )
 }
- 
+

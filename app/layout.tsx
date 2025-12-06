@@ -12,8 +12,8 @@ const inter = Inter({ subsets: ["latin"] })
 
 
 export const metadata: Metadata = {
-  title: "QR Code Generator & Analytics Platform",
-  description: "Generate dynamic QR codes and track their performance",
+  title: "QrMonitor - Dynamic QR Codes That Last Forever",
+  description: "Create QR codes that last a lifetime. Update destinations anytime, track every scan, and never reprint again. One QR code, unlimited possibilities.",
   manifest: "/manifest.json",
   icons: {
     icon: [
@@ -63,7 +63,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="apple-mobile-web-app-title" content="DashQR" />
+        <meta name="apple-mobile-web-app-title" content="QrMonitor" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#2fb9e4" />
         <meta name="mobile-web-app-capable" content="yes" />
