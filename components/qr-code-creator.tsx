@@ -2,8 +2,8 @@
 import React, { useEffect, useRef, useState, ChangeEvent } from "react";
 import QRCodeStyling, { Options, FileExtension } from "qr-code-styling";
 
-export default function ClientQR({qrCodeOption, height, width}:any) {
-  const [options, setOptions] = useState<Options>({...qrCodeOption, height: height, width: width});
+export default function ClientQR({ qrCodeOption, height, width }: any) {
+  const [options, setOptions] = useState<Options>({ ...qrCodeOption, height: height, width: width });
   const [fileExt, setFileExt] = useState<FileExtension>("svg");
   const [qrCode, setQrCode] = useState<QRCodeStyling>();
   const ref = useRef<HTMLDivElement>(null);
@@ -17,6 +17,11 @@ export default function ClientQR({qrCodeOption, height, width}:any) {
       qrCode?.append(ref.current);
     }
   }, [qrCode, ref]);
+
+  // Update options when props change
+  useEffect(() => {
+    setOptions({ ...qrCodeOption, height: height, width: width });
+  }, [qrCodeOption, height, width]);
 
   useEffect(() => {
     if (!qrCode) return;
@@ -38,7 +43,7 @@ export default function ClientQR({qrCodeOption, height, width}:any) {
 
   return (
     <>
-      <div className={`flex justify-center items-center overflow-hidden h-[${height}px] w-[${width}px] object-cover`} ref={ref}/>
+      <div className={`flex justify-center items-center overflow-hidden h-[${height}px] w-[${width}px] object-cover`} ref={ref} />
       {/* <div >
         <input value={options.data} onChange={onDataChange} />
         <select onChange={onExtensionChange} value={fileExt}>
