@@ -12,7 +12,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { useTheme } from "next-themes"
 import { subscribeUser, unsubscribeUser } from "./action"
 import { QrLifecycleDemo } from "@/components/qr-lifecycle-demo"
 import { AnalyticsPreview } from "@/components/analytics-preview"
@@ -50,7 +49,7 @@ export default function LandingPage() {
           </nav>
           <div className="flex items-center gap-4">
             <Button className="hidden md:inline-flex">
-              <Link href="/dashboard">Get Started Free</Link>
+              <Link href="/payment-request">Get Started Free</Link>
             </Button>
             <Sheet>
               <SheetTrigger asChild>
@@ -81,7 +80,7 @@ export default function LandingPage() {
                   </Link>
                   <div className="pt-4">
                     <Button className="w-full" asChild>
-                      <Link href="/dashboard">Get Started Free</Link>
+                      <Link href="/payment-request">Get Started Free</Link>
                     </Button>
                   </div>
                 </nav>
@@ -113,7 +112,7 @@ export default function LandingPage() {
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button size="lg" className="bg-primary text-primary-foreground">
 
-                    <Link href="/dashboard">Get Started Free</Link>
+                    <Link href="/payment-request">Get Started Free</Link>
 
                   </Button>
 
@@ -389,8 +388,9 @@ export default function LandingPage() {
                         <Button
                           className={cn("mt-8", !plan.popular && "bg-muted hover:bg-muted/80 text-foreground")}
                           variant={plan.popular ? "default" : "outline"}
+                          asChild
                         >
-                          Get Started
+                          <Link href="/payment-request">Get Started</Link>
                         </Button>
                       </motion.div>
                     ))}
@@ -434,8 +434,9 @@ export default function LandingPage() {
                         <Button
                           className={cn("mt-8", !plan.popular && "bg-muted hover:bg-muted/80 text-foreground")}
                           variant={plan.popular ? "default" : "outline"}
+                          asChild
                         >
-                          Get Started
+                          <Link href="/payment-request">Get Started</Link>
                         </Button>
                       </motion.div>
                     ))}
@@ -486,7 +487,7 @@ export default function LandingPage() {
                 </CardHeader>
                 <CardContent>
                   <Button size="lg" className="bg-primary text-primary-foreground">
-                    <Link href="/dashboard">Get Started Free</Link>
+                    <Link href="/payment-request">Get Started Free</Link>
                   </Button>
                 </CardContent>
               </Card>
