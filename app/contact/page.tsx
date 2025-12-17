@@ -1,11 +1,60 @@
+"use client"
+
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { Loader2, Mail, MapPin, Phone } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Mail, MapPin, Phone } from "lucide-react"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { toast } from "sonner"
+import { sendContactMessage } from "@/services/ContactServices"
+
+const contactSchema = z.object({
+    firstName: z.string().min(1, "First name is required"),
+    lastName: z.string().min(1, "Last name is required"),
+    email: z.string().email("Invalid email address"),
+    message: z.string().min(10, "Message must be at least 10 characters"),
+})
+
+type ContactFormValues = z.infer<typeof contactSchema>
 
 export default function ContactPage() {
+    const [isLoading, setIsLoading] = useState(false)
+
+    const form = useForm<ContactFormValues>({
+        resolver: zodResolver(contactSchema),
+        defaultValues: {
+            firstName: "",
+            lastName: "",
+            email: "",
+            message: "",
+        },
+    })
+
+    const onSubmit = async (data: ContactFormValues) => {
+        setIsLoading(true)
+        try {
+            const res = await sendContactMessage(data)
+            if (res.success) {
+                toast.success("Message sent successfully", {
+                    description: "We'll get back to you soon.",
+                })
+                form.reset()
+            } else {
+                toast.error(res.message || "Failed to send message")
+            }
+        } catch (error) {
+            toast.error("Something went wrong")
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
     return (
         <div className="container py-20">
             <div className="mx-auto max-w-2xl space-y-8">
@@ -25,31 +74,73 @@ export default function ContactPage() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <form className="space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="first-name">First name</Label>
-                                        <Input id="first-name" placeholder="John" />
+                            <Form {...form}>
+                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="firstName"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>First name</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="John" {...field} disabled={isLoading} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="lastName"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Last name</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="Doe" {...field} disabled={isLoading} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="last-name">Last name</Label>
-                                        <Input id="last-name" placeholder="Doe" />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input id="email" placeholder="john@example.com" type="email" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="message">Message</Label>
-                                    <Textarea
-                                        id="message"
-                                        placeholder="How can we help you?"
-                                        className="min-h-[150px]"
+                                    <FormField
+                                        control={form.control}
+                                        name="email"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Email</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="john@example.com" type="email" {...field} disabled={isLoading} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
                                     />
-                                </div>
-                                <Button className="w-full">Send Message</Button>
-                            </form>
+                                    <FormField
+                                        control={form.control}
+                                        name="message"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Message</FormLabel>
+                                                <FormControl>
+                                                    <Textarea
+                                                        placeholder="How can we help you?"
+                                                        className="min-h-[150px]"
+                                                        {...field}
+                                                        disabled={isLoading}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <Button type="submit" className="w-full" disabled={isLoading}>
+                                        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                        {isLoading ? "Sending..." : "Send Message"}
+                                    </Button>
+                                </form>
+                            </Form>
                         </CardContent>
                     </Card>
 
@@ -66,14 +157,14 @@ export default function ContactPage() {
                                 <Phone className="h-6 w-6" />
                             </div>
                             <h3 className="font-semibold">Phone</h3>
-                            <p className="text-sm text-muted-foreground">+1 (555) 000-0000</p>
+                            <p className="text-sm text-muted-foreground">+8801738313337</p>
                         </div>
                         <div className="flex flex-col items-center space-y-2">
                             <div className="p-3 rounded-full bg-primary/10 text-primary">
                                 <MapPin className="h-6 w-6" />
                             </div>
                             <h3 className="font-semibold">Office</h3>
-                            <p className="text-sm text-muted-foreground">123 QR Street, Tech City</p>
+                            <p className="text-sm text-muted-foreground">Uttara, Dhaka, Bangladesh</p>
                         </div>
                     </div>
                 </div>

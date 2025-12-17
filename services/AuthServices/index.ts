@@ -75,13 +75,18 @@ export const forgetPassword = async (data: FieldValues) => {
   }
 };
 
-export const resetPassword = async (data: FieldValues, token: string) => {
+export const checkResetOtp = async (data: FieldValues) => {
   try {
-    const res = await app_axios.post("/auth/reset-password", data, {
-      headers: {
-        Authorization: token,
-      },
-    });
+    const res = await app_axios.post("/auth/check-reset-otp", data);
+    return res.data;
+  } catch (error: any) {
+    return FormatErrorResponse(error);
+  }
+};
+
+export const resetPassword = async (data: FieldValues) => {
+  try {
+    const res = await app_axios.post("/auth/reset-password", data);
     return res.data;
   } catch (error: any) {
     return FormatErrorResponse(error);
