@@ -137,7 +137,7 @@ export default function LandingPage() {
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl opacity-20 blur-xl"></div>
                   <div className="relative bg-card border rounded-2xl shadow-lg p-8 h-full flex items-center justify-center">
-                    <div className="relative w-3/4 aspect-square">
+                    <div className="relative w-3/4 aspect-square p-2 bg-white rounded-lg">
                       <Image
                         src="/qr-code.png"
                         alt="Animated QR Code"
@@ -293,7 +293,7 @@ export default function LandingPage() {
         </section>
 
         {/* Testimonials Section */}
-        <section id="testimonials" className="py-20">
+        <section id="testimonials" className="py-20 hidden">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
