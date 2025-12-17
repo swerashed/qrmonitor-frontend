@@ -49,7 +49,7 @@ export default function LandingPage() {
           </nav>
           <div className="flex items-center gap-4">
             <Button className="hidden md:inline-flex">
-              <Link href="/payment-request">Get Started Free</Link>
+              <Link href="/login">Get Started Free</Link>
             </Button>
             <Sheet>
               <SheetTrigger asChild>
@@ -80,7 +80,7 @@ export default function LandingPage() {
                   </Link>
                   <div className="pt-4">
                     <Button className="w-full" asChild>
-                      <Link href="/payment-request">Get Started Free</Link>
+                      <Link href="/login">Get Started Free</Link>
                     </Button>
                   </div>
                 </nav>
@@ -112,7 +112,7 @@ export default function LandingPage() {
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button size="lg" className="bg-primary text-primary-foreground">
 
-                    <Link href="/payment-request">Get Started Free</Link>
+                    <Link href="/login">Get Started Free</Link>
 
                   </Button>
 
@@ -390,7 +390,7 @@ export default function LandingPage() {
                           variant={plan.popular ? "default" : "outline"}
                           asChild
                         >
-                          <Link href="/payment-request">Get Started</Link>
+                          <Link href={plan.monthlyPrice > 0 ? "/payment-request" : "/login"}>Get Started</Link>
                         </Button>
                       </motion.div>
                     ))}
@@ -436,7 +436,7 @@ export default function LandingPage() {
                           variant={plan.popular ? "default" : "outline"}
                           asChild
                         >
-                          <Link href="/payment-request">Get Started</Link>
+                          <Link href={plan.monthlyPrice > 0 ? "/payment-request" : "/login"}>Get Started</Link>
                         </Button>
                       </motion.div>
                     ))}
@@ -487,7 +487,7 @@ export default function LandingPage() {
                 </CardHeader>
                 <CardContent>
                   <Button size="lg" className="bg-primary text-primary-foreground">
-                    <Link href="/payment-request">Get Started Free</Link>
+                    <Link href="/login">Get Started Free</Link>
                   </Button>
                 </CardContent>
               </Card>
