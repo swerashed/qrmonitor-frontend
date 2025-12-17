@@ -13,6 +13,7 @@ import { toast } from "sonner"
 import { signInUser, signUpUser, verifyEmail, forgetPassword, resendOtp } from "@/services/AuthServices"
 import { useRouter } from "next/navigation"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
+import { PasswordInput } from "@/components/ui/password-input"
 
 // Define the login form schema with Zod
 const loginSchema = z.object({
@@ -186,22 +187,8 @@ export function AuthForm() {
 
   // Handle Forgot Password submission
   const onForgotPasswordSubmit = async (data: ForgotPasswordValues) => {
-    setIsLoading(true)
-    try {
-      const res = await forgetPassword(data)
-      if (res.success) {
-        toast.success("Reset link sent", {
-          description: "Check your email for the reset link.",
-        })
-        handleTabChange("login")
-      } else {
-        toast.error(res.message || "Request failed")
-      }
-    } catch (error) {
-      toast.error("Something went wrong")
-    } finally {
-      setIsLoading(false)
-    }
+    // If they already entered an email, we can pass it as query param
+    router.push(`/reset-pass?email=${encodeURIComponent(data.email)}`)
   }
 
 
@@ -342,7 +329,7 @@ export function AuthForm() {
                   />
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Send Reset Link
+                    Proceed to Reset
                   </Button>
                   <Button type="button" variant="link" className="w-full" onClick={() => handleTabChange("login")}>
                     Back to Login
@@ -381,9 +368,8 @@ export function AuthForm() {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input
+                        <PasswordInput
                           placeholder="Enter your password"
-                          type="password"
                           autoComplete="current-password"
                           disabled={isLoading}
                           {...field}
@@ -446,9 +432,8 @@ export function AuthForm() {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input
+                        <PasswordInput
                           placeholder="Create a password"
-                          type="password"
                           autoComplete="new-password"
                           disabled={isLoading}
                           {...field}
@@ -465,9 +450,8 @@ export function AuthForm() {
                     <FormItem>
                       <FormLabel>Confirm Password</FormLabel>
                       <FormControl>
-                        <Input
+                        <PasswordInput
                           placeholder="Confirm your password"
-                          type="password"
                           autoComplete="new-password"
                           disabled={isLoading}
                           {...field}

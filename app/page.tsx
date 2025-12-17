@@ -46,6 +46,9 @@ export default function LandingPage() {
             <Link href="#pricing" className="text-sm font-medium hover:text-primary">
               Pricing
             </Link>
+            <Link href="/contact" className="text-sm font-medium hover:text-primary">
+              Contact
+            </Link>
           </nav>
           <div className="flex items-center gap-4">
             <Button className="hidden md:inline-flex">
@@ -74,6 +77,9 @@ export default function LandingPage() {
                   </Link>
                   <Link href="#pricing" className="text-lg font-medium hover:text-primary">
                     Pricing
+                  </Link>
+                  <Link href="/contact" className="text-lg font-medium hover:text-primary">
+                    Contact
                   </Link>
                   <Link href="#faq" className="text-lg font-medium hover:text-primary">
                     FAQ
@@ -529,7 +535,7 @@ export default function LandingPage() {
               </ul>
             </div>
           </div>
-          <div className="mt-12 flex flex-col items-center justify-center gap-4 border-t pt-8">
+          <div className="mt-12 flex flex-col items-center justify-center gap-4 ">
             <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} QrMonitor. All rights reserved.</p>
             <div className="flex gap-4 justify-center items-center">
               <p className="text-sm text-muted-foreground">Devloped by •</p>

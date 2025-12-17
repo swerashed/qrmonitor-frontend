@@ -2,7 +2,7 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
-import { BarChart3, LogOut, QrCode, Settings, Menu, LayoutDashboardIcon } from "lucide-react"
+import { BarChart3, LogOut, QrCode, Settings, Menu, LayoutDashboardIcon, HelpCircle } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -27,6 +27,7 @@ const navigation = [
   { name: "QR Codes", href: "/dashboard/qr-codes", icon: QrCode },
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Help", href: "/contact", icon: HelpCircle },
   // { name: "Account", href: "/dashboard/account", icon: User },
 ]
 
