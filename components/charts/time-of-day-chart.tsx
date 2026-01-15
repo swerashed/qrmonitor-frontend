@@ -5,7 +5,7 @@ import { Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } f
 import { ChartTooltip } from "@/components/ui/chart"
 
 
-export function TimeOfDayChart({data}:any) {
+export function TimeOfDayChart({ data }: any) {
   const renderLegend = () => (
     <div className="mt-4 flex justify-center text-xs text-muted-foreground uppercase">
       <div className="flex items-center gap-2">
@@ -15,7 +15,7 @@ export function TimeOfDayChart({data}:any) {
     </div>
   )
   return (
-    <div className="h-[200px] w-full">
+    <div className="h-full w-full">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}

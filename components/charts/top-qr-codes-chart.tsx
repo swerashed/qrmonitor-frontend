@@ -1,13 +1,13 @@
 "use client"
 
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
 import { ChartTooltip } from "@/components/ui/chart"
 
 
-export function TopQrCodesChart({data}:any) {
+export function TopQrCodesChart({ data }: any) {
   return (
-    <div className="h-[300px] w-full">
+    <div className="h-full w-full">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}
@@ -19,6 +19,7 @@ export function TopQrCodesChart({data}:any) {
             bottom: 5,
           }}
         >
+          <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="hsl(var(--muted-foreground)/0.2)" />
           <XAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
           <YAxis
             type="category"
@@ -48,7 +49,7 @@ export function TopQrCodesChart({data}:any) {
               return null
             }}
           />
-         <Bar dataKey="totalScans" fill="hsl(var(--primary))" radius={[4, 4, 4, 4]} barSize={20} />
+          <Bar dataKey="totalScans" fill="hsl(var(--primary))" radius={[4, 4, 4, 4]} barSize={20} />
 
         </BarChart>
       </ResponsiveContainer>

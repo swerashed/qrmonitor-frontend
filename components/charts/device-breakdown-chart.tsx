@@ -59,7 +59,7 @@ export function DeviceBreakdownChart({ data }: { data: DeviceData[] }) {
     )
   }
   return (
-    <div className="h-[200px] w-full">
+    <div className="h-full w-full">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
@@ -99,11 +99,11 @@ export function DeviceBreakdownChart({ data }: { data: DeviceData[] }) {
               return null
             }}
           />
-      
-            <Legend
+
+          <Legend
             content={renderLegend}
-            />
- 
+          />
+
 
         </PieChart>
       </ResponsiveContainer>

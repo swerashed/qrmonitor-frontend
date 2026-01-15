@@ -15,7 +15,7 @@ import { useTheme } from "next-themes"
 import { toast } from "sonner"
 
 export default function SettingsPage({ data }: any) {
-  const [apiKey, setApiKey] = useState("CLEANED_SECRET")
+  const [settingsKey, setSettingsKey] = useState("")
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -26,7 +26,7 @@ export default function SettingsPage({ data }: any) {
 
   if (!mounted) return null
   const copyApiKey = () => {
-    navigator.clipboard.writeText(apiKey)
+    navigator.clipboard.writeText(settingsKey)
     // toast({
     //   title: "API Key Copied",
     //   description: "Your API key has been copied to the clipboard.",
@@ -34,7 +34,7 @@ export default function SettingsPage({ data }: any) {
   }
 
   const regenerateApiKey = () => {
-    setApiKey("sk_live_" + Math.random().toString(36).substring(2, 15))
+    setSettingsKey("key_" + Math.random().toString(36).substring(2, 15))
     // toast({
     //   title: "API Key Regenerated",
     //   description: "Your API key has been regenerated successfully.",
@@ -54,11 +54,11 @@ export default function SettingsPage({ data }: any) {
         <p className="text-muted-foreground">Manage your account settings and preferences</p>
       </div>
       <Tabs defaultValue="general">
-        <TabsList className="grid w-full grid-cols-3 md:w-auto">
-          <TabsTrigger value="general">General</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="api">API</TabsTrigger>
-        </TabsList>
+        {/* <TabsList className="grid w-full grid-cols-1 md:w-auto"> */}
+        {/* <TabsTrigger value="general">General Settings</TabsTrigger> */}
+        {/* <TabsTrigger value="notifications">Notifications</TabsTrigger>
+          <TabsTrigger value="api">API</TabsTrigger> */}
+        {/* </TabsList> */}
         <TabsContent value="general" className="space-y-4">
           <Card>
             <CardHeader>
@@ -86,7 +86,7 @@ export default function SettingsPage({ data }: any) {
               </Button>
             </CardFooter>
           </Card>
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle>Password</CardTitle>
               <CardDescription>Change your password</CardDescription>
@@ -94,15 +94,15 @@ export default function SettingsPage({ data }: any) {
             <CardContent className="space-y-4">
               <div className="grid gap-2">
                 <Label htmlFor="current-password">Current Password</Label>
-                <Input disabled autoComplete="off"  id="current-password" type="password" />
+                <Input disabled autoComplete="off" id="current-password" type="password" />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="new-password">New Password</Label>
-                <Input disabled  autoComplete="off" id="new-password" type="password" />
+                <Input disabled autoComplete="off" id="new-password" type="password" />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="confirm-password">Confirm New Password</Label>
-                <Input disabled autoComplete="off"  id="confirm-password" type="password" />
+                <Input disabled autoComplete="off" id="confirm-password" type="password" />
               </div>
             </CardContent>
             <CardFooter>
@@ -111,7 +111,7 @@ export default function SettingsPage({ data }: any) {
                 Update Password
               </Button>
             </CardFooter>
-          </Card>
+          </Card> */}
           <Card>
             <CardHeader>
               <CardTitle>Appearance</CardTitle>
@@ -145,101 +145,12 @@ export default function SettingsPage({ data }: any) {
             </CardFooter>
           </Card>
         </TabsContent>
-        <TabsContent value="notifications" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Notification Preferences</CardTitle>
-              <CardDescription>Choose what notifications you want to receive</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label htmlFor="email-notifications">Email Notifications</Label>
-                  <div className="text-sm text-muted-foreground">Receive email notifications for important events</div>
-                </div>
-                <Switch id="email-notifications" defaultChecked />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label htmlFor="scan-alerts">Scan Alerts</Label>
-                  <div className="text-sm text-muted-foreground">Get notified when your QR codes are scanned</div>
-                </div>
-                <Switch id="scan-alerts" defaultChecked />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label htmlFor="marketing-emails">Marketing Emails</Label>
-                  <div className="text-sm text-muted-foreground">Receive updates about new features and promotions</div>
-                </div>
-                <Switch id="marketing-emails" />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label htmlFor="weekly-digest">Weekly Digest</Label>
-                  <div className="text-sm text-muted-foreground">
-                    Receive a weekly summary of your QR code performance
-                  </div>
-                </div>
-                <Switch id="weekly-digest" defaultChecked />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button disabled onClick={saveSettings}>
-                <Bell className="mr-2 h-4 w-4" />
-                Save Notification Settings
-              </Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-        <TabsContent value="api" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>API Access</CardTitle>
-              <CardDescription>Manage your API keys and access</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="api-key">API Key</Label>
-                <div className="flex items-center gap-2">
-                  <Input id="api-key" value={apiKey} readOnly type="password" />
-                  <Button disabled variant="outline" size="icon" onClick={copyApiKey}>
-                    <Copy className="h-4 w-4" />
-                    <span className="sr-only">Copy API Key</span>
-                  </Button>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Your API key provides full access to your account. Keep it secure.
-                </p>
-              </div>
-              <Button disabled variant="outline" onClick={regenerateApiKey}>
-                <Key className="mr-2 h-4 w-4" />
-                Regenerate API Key
-              </Button>
-              <div className="space-y-2">
-                <Label htmlFor="webhook-url">Webhook URL</Label>
-                <Input disabled id="webhook-url" placeholder="https://your-server.com/webhook" />
-                <p className="text-sm text-muted-foreground">We'll send scan events to this URL in real-time.</p>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="allowed-domains">Allowed Domains</Label>
-                <Textarea disabled
-                  id="allowed-domains"
-                  placeholder="example.com&#10;app.example.com"
-                  className="min-h-[100px]"
-                />
-                <p className="text-sm text-muted-foreground">
-                  Enter one domain per line. Only these domains will be allowed to use your API key.
-                </p>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button disabled onClick={saveSettings}>
-                <Save className="mr-2 h-4 w-4" />
-                Save API Settings
-              </Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
+        {/* <TabsContent value="notifications" className="space-y-4">
+...
+        </TabsContent> */}
+        {/* <TabsContent value="api" className="space-y-4">
+...
+        </TabsContent> */}
       </Tabs>
     </div>
   )
