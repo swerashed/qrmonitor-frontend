@@ -1,6 +1,8 @@
 "use client"
 import React, { useEffect, useRef, useState, ChangeEvent } from "react";
 import QRCodeStyling, { Options, FileExtension } from "qr-code-styling";
+import { ensureDynamicQrUrl } from "@/helpers/ensureDynamicQrUrl";
+import { getBaseUrl } from "@/helpers/getBaseUrl";
 
 export default function ClientQR({ qrCodeOption, height, width }: any) {
   const [options, setOptions] = useState<Options>({ ...qrCodeOption, height: height, width: width });
@@ -20,7 +22,15 @@ export default function ClientQR({ qrCodeOption, height, width }: any) {
 
   // Update options when props change
   useEffect(() => {
-    setOptions({ ...qrCodeOption, height: height, width: width });
+    const updateOptions = async () => {
+      const dynamicOptions = { ...qrCodeOption, height: height, width: width };
+      if (dynamicOptions.data) {
+        const baseUrl = await getBaseUrl();
+        dynamicOptions.data = ensureDynamicQrUrl(dynamicOptions.data, baseUrl);
+      }
+      setOptions(dynamicOptions);
+    };
+    updateOptions();
   }, [qrCodeOption, height, width]);
 
   useEffect(() => {

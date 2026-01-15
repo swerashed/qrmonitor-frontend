@@ -17,6 +17,7 @@ import { CreateQRCode } from "@/services/QRCodeServices"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
 import QRCodeStyling from "qr-code-styling"
+import { getBaseUrl } from "@/helpers/getBaseUrl"
 
 export default function CreateQRCodePage() {
     const router = useRouter()
@@ -42,11 +43,12 @@ export default function CreateQRCodePage() {
         },
     })
 
-    const handleUrlChange = (newUrl: string) => {
+    const handleUrlChange = async (newUrl: string) => {
         setUrl(newUrl)
         if (newUrl) {
             const newId = uuidv4()
-            const scanUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/scan/${newId}`
+            const baseUrl = await getBaseUrl()
+            const scanUrl = `${baseUrl}/scan/${newId}`
             setQrCodeId(newId)
             setQrCodeOptions((prev) => ({
                 ...prev,
