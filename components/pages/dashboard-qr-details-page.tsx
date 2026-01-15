@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { getSingleQRCode, deleteQrCode } from "@/services/QRCodeServices";
 import { EditQRCodeModal } from "@/components/edit-qr-code-modal";
+import { DeleteQRCodeConfirmationModal } from "@/components/delete-qr-confirmation-modal";
 import { toast } from "sonner";
 
 export default function DashboardQRDetailsPage() {
@@ -32,6 +33,7 @@ export default function DashboardQRDetailsPage() {
 
   const qrCode = response?.data?.qrCode;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [qrCodeInstance, setQrCodeInstance] = useState<QRCodeStyling | null>(null);
 
   // Initialize QR Code
@@ -136,7 +138,8 @@ export default function DashboardQRDetailsPage() {
             <Download className="mr-2 h-4 w-4" />
             Download
           </Button>
-          <Button variant="destructive" size="sm" className="rounded-lg shadow-sm" onClick={() => deleteMutation.mutate(qrCode.id)}>
+
+          <Button variant="destructive" size="sm" className="rounded-lg shadow-sm" onClick={() => setIsDeleteModalOpen(true)}>
             <Trash2 className="mr-2 h-4 w-4" />
             Delete
           </Button>
@@ -273,20 +276,16 @@ export default function DashboardQRDetailsPage() {
         }}
         onSuccess={refetch}
       />
-    </div>
-  );
-}
 
-function EmptyAnalyticsState() {
-  return (
-    <div className="flex flex-col items-center justify-center py-12 text-center">
-      <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-4">
-        <Activity className="h-6 w-6 text-muted-foreground/50" />
-      </div>
-      <p className="text-sm font-medium text-muted-foreground">No analytics data available yet</p>
-      <p className="text-sm text-muted-foreground max-w-[250px]">
-        Share your QR code to start collecting scan analytics and insights.
-      </p>
-    </div>
+      <DeleteQRCodeConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={() => {
+          deleteMutation.mutate(qrCode.id)
+          setIsDeleteModalOpen(false)
+        }}
+        qrName={qrCode.name}
+      />
+    </div >
   );
 }

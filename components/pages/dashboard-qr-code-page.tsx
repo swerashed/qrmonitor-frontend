@@ -25,6 +25,7 @@ import { ErrorBlock } from "../error-block"
 import QRCodeDashboardLoading from "@/app/dashboard/qr-codes/loading"
 import { useQuery } from "@tanstack/react-query"
 import { EditQRCodeModal } from "@/components/edit-qr-code-modal"
+import { DeleteQRCodeConfirmationModal } from "@/components/delete-qr-confirmation-modal"
 
 export default function DashboardQrCodesPage() {
   const router = useRouter()
@@ -37,6 +38,8 @@ export default function DashboardQrCodesPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [editingQr, setEditingQr] = useState<any>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [qrToDelete, setQrToDelete] = useState<any>(null)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   const qrCodes = data?.data || []
 
@@ -222,7 +225,10 @@ export default function DashboardQrCodesPage() {
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
-                              onClick={() => handleDeleteQr(qr.id)}
+                              onClick={() => {
+                                setQrToDelete(qr)
+                                setIsDeleteDialogOpen(true)
+                              }}
                               className="text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer"
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
@@ -277,6 +283,22 @@ export default function DashboardQrCodesPage() {
           onSuccess={refetch}
         />
       )}
+
+      <DeleteQRCodeConfirmationModal
+        isOpen={isDeleteDialogOpen}
+        onClose={() => {
+          setIsDeleteDialogOpen(false)
+          setQrToDelete(null)
+        }}
+        onConfirm={() => {
+          if (qrToDelete) {
+            handleDeleteQr(qrToDelete.id)
+            setQrToDelete(null)
+            setIsDeleteDialogOpen(false)
+          }
+        }}
+        qrName={qrToDelete?.name}
+      />
     </div>
   )
 }
