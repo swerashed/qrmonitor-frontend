@@ -125,7 +125,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
       <div className="flex flex-1">
-        <aside className="hidden w-64 shrink-0 border-r md:block">
+        <aside className="hidden w-64 shrink-0 border-r md:block sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto">
           <div className="flex h-full flex-col gap-2 p-4">
             <nav className="grid gap-1">
               {navigation.map((item) => {
