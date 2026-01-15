@@ -67,20 +67,25 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 <span className="text-lg font-semibold">QrMonitor</span>
               </Link>
               <nav className="grid gap-2 px-2">
-                {navigation.map((item) => (
-                  <Button
-                    key={item.name}
-                    variant={pathname === item.href ? "default" : "ghost"}
-                    className={cn("justify-start", pathname === item.href && "bg-primary text-primary-foreground")}
-                    onClick={() => setIsMobileNavOpen(false)}
-                    asChild
-                  >
-                    <a href={item.href}>
-                      <item.icon className="mr-2 h-5 w-5" />
-                      {item.name}
-                    </a>
-                  </Button>
-                ))}
+                {navigation.map((item) => {
+                  const isActive = item.href === "/dashboard"
+                    ? pathname === "/dashboard"
+                    : pathname.startsWith(item.href);
+                  return (
+                    <Button
+                      key={item.name}
+                      variant={isActive ? "default" : "ghost"}
+                      className={cn("justify-start", isActive && "bg-primary text-primary-foreground")}
+                      onClick={() => setIsMobileNavOpen(false)}
+                      asChild
+                    >
+                      <a href={item.href}>
+                        <item.icon className="mr-2 h-5 w-5" />
+                        {item.name}
+                      </a>
+                    </Button>
+                  )
+                })}
               </nav>
             </div>
           </SheetContent>
@@ -123,19 +128,24 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <aside className="hidden w-64 shrink-0 border-r md:block">
           <div className="flex h-full flex-col gap-2 p-4">
             <nav className="grid gap-1">
-              {navigation.map((item) => (
-                <Button
-                  key={item.name}
-                  variant={pathname === item.href ? "default" : "ghost"}
-                  className={cn("justify-start", pathname === item.href && "bg-primary text-primary-foreground")}
-                  asChild
-                >
-                  <a href={item.href}>
-                    <item.icon className="mr-2 h-5 w-5" />
-                    {item.name}
-                  </a>
-                </Button>
-              ))}
+              {navigation.map((item) => {
+                const isActive = item.href === "/dashboard"
+                  ? pathname === "/dashboard"
+                  : pathname.startsWith(item.href);
+                return (
+                  <Button
+                    key={item.name}
+                    variant={isActive ? "default" : "ghost"}
+                    className={cn("justify-start", isActive && "bg-primary text-primary-foreground")}
+                    asChild
+                  >
+                    <a href={item.href}>
+                      <item.icon className="mr-2 h-5 w-5" />
+                      {item.name}
+                    </a>
+                  </Button>
+                )
+              })}
             </nav>
           </div>
         </aside>
