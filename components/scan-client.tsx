@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
-import { Loader2 } from 'lucide-react';
 import { getQRCodeScanSettings } from '@/services/QRCodeServices';
-import { scanQRCodeClient } from '@/hooks/scanQRCodeClient';
+import { getApiUrl } from '@/helpers/getApiUrl';
 
 type Props = {
   qrId: string;
@@ -27,19 +26,45 @@ const ScanClient = ({ qrId }: Props) => {
         const targetUrl = settings?.data?.qrCode?.targetUrl;
 
         if (!targetUrl) {
-          setError('No target URL found.');
+          setError('No target URL found for this QR code.');
           return;
         }
 
-        const scanRes = await scanQRCodeClient({ qrId, fingerprint });
+        // Fire tracking request and AWAIT confirmation to ensure accuracy
+        // Since geolocation is backgrounded on the server, this response will be very fast
+        const baseUrl = await getApiUrl();
+        const apiUrl = `${baseUrl}/qr-code/track-scan`;
 
-        if (scanRes?.success) {
-          window.location.href = targetUrl;
-        } else {
-          setError('Scan failed.');
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ qrId, fingerprint }),
+            keepalive: true,
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `HTTP ${response.status}`);
+          }
+        } catch (fetchErr: any) {
+          console.error("Tracking request failed:", fetchErr);
+          // If we're in development, we want to know why it failed (likely localhost issue)
+          if (process.env.NODE_ENV === 'development') {
+            setError(`Tracking Failed: ${fetchErr.message}. Check if your API URL (${apiUrl}) is accessible from your mobile device.`);
+            return;
+          }
+          // In production, we might still want to redirect if the tracking fails but it's not ideal
+          // For now, let's show an error to be safe as per user request for "full accuracy"
+          setError("Failed to record scan. Please try again.");
+          return;
         }
-      } catch (err) {
-        setError('Error during scan.');
+
+        // Redirect only after tracking is confirmed
+        window.location.href = targetUrl;
+      } catch (err: any) {
+        console.error("Scan processing error:", err);
+        setError(process.env.NODE_ENV === 'development' ? `Error: ${err.message}` : "An error occurred while processing your scan.");
       }
     };
 
