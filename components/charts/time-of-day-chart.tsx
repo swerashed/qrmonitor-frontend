@@ -28,7 +28,7 @@ export function TimeOfDayChart({ data }: any) {
         >
           <XAxis
             dataKey="hour"
-            tickFormatter={(value) => `${value}:00`}
+            tickFormatter={(value) => value}
             stroke="#888888"
             fontSize={12}
             tickLine={false}
@@ -44,8 +44,10 @@ export function TimeOfDayChart({ data }: any) {
           <Tooltip
             content={({ active, payload }) => {
               if (active && payload && payload.length) {
-                const hour = payload[0].payload.hour
-                const formattedHour = `${hour}:00 ${hour >= 12 ? "PM" : "AM"}`
+                const hourStr = payload[0].payload.hour
+                const [h, m] = hourStr.split(':')
+                const hourNum = parseInt(h)
+                const formattedHour = `${hourNum > 12 ? hourNum - 12 : (hourNum === 0 ? 12 : hourNum)}:${m} ${hourNum >= 12 ? "PM" : "AM"}`
 
                 return (
                   <ChartTooltip className="border-primary/10 bg-background">
