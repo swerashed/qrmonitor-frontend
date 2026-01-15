@@ -19,6 +19,7 @@ import ClientQR from "./qr-code-creator"
 import { CreateQrCodeModalProps } from "@/interfaces"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { getBaseUrl } from "@/helpers/getBaseUrl"
 
 
 
@@ -68,7 +69,7 @@ export function CreateQrCodeModal({ open, onOpenChange, refetch }: CreateQrCodeM
     }
 
     mutate(data)
-  
+
   }
 
   return (
@@ -107,9 +108,10 @@ export function CreateQrCodeModal({ open, onOpenChange, refetch }: CreateQrCodeM
                 type="url"
                 placeholder="https://example.com"
                 value={url}
-                onChange={(e) => {
+                onChange={async (e) => {
                   const newId = uuidv4()
-                  const scanUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/scan/${newId}`
+                  const baseUrl = await getBaseUrl()
+                  const scanUrl = `${baseUrl}/scan/${newId}`
 
                   setUrl(e.target.value)
                   setQrCodeId(newId)

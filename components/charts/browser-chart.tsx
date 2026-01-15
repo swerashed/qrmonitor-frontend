@@ -1,11 +1,11 @@
 "use client"
 
-import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
 import { ChartTooltip } from "@/components/ui/chart"
 export function BrowserChart({ data }: any) {
   return (
-    <div className="h-[300px] w-full">
+    <div className="h-full w-full min-h-[300px]">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}
@@ -16,6 +16,7 @@ export function BrowserChart({ data }: any) {
             bottom: 5,
           }}
         >
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted-foreground)/0.2)" />
           <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
           <YAxis
             stroke="#888888"

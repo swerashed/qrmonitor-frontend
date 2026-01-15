@@ -12,28 +12,29 @@ import { getDashboardStats } from "@/services/QRCodeServices"
 import { getDeviceIcon } from "@/hooks/getDeviceIcon"
 import MainDashboardLoading from "@/app/dashboard/loading"
 import { ErrorBlock } from "../error-block"
+import Link from "next/link"
 
 
 const DashboardMainPage = () => {
     const { data, isError, isLoading, isSuccess, error, refetch } = useQuery({
         queryKey: ["getDashboardStats"],
         queryFn: getDashboardStats,
-      })
-    
-      if (isLoading) {
-        return <MainDashboardLoading/>
-      }
-      if (isError) {
+    })
+
+    if (isLoading) {
+        return <MainDashboardLoading />
+    }
+    if (isError) {
         return (
-          <ErrorBlock
-            message={(error as Error).message}
-            retry={() => refetch()}
-          />
+            <ErrorBlock
+                message={(error as Error).message}
+                retry={() => refetch()}
+            />
         )
-      }
-    
-      const dashboardData = data?.data
-   
+    }
+
+    const dashboardData = data?.data
+
 
 
     if (isSuccess) return (
@@ -76,9 +77,11 @@ const DashboardMainPage = () => {
                             <CardTitle>Scan Activity</CardTitle>
                             <CardDescription>Scan activity over the last 30 days</CardDescription>
                         </CardHeader>
-                  
-                        <ScansOverTimeChart data={dashboardData?.scanActivity} />
-                     
+
+                        <CardContent className="pt-6 h-[350px]">
+                            <ScansOverTimeChart data={dashboardData?.scanActivity} />
+                        </CardContent>
+
 
                     </Card>
                     {/* <Card className="flex justify-center items-center">
@@ -156,13 +159,22 @@ const DashboardMainPage = () => {
                                 {
                                     dashboardData?.topQRCodes?.map((topQR: any, index: any) => (
                                         <div key={index} className="flex items-center">
-                                            <div className="w-full space-y-2">
+                                            <div className="w-full space-y-2 group/qr">
                                                 <div className="flex items-center justify-between">
-                                                    <span className="text-sm font-medium">{topQR?.name}</span>
-                                                    <span className="text-sm text-muted-foreground">{topQR?.totalScans} scans</span>
+                                                    <Link
+                                                        href={`/dashboard/qr-codes/${topQR?.qrId || topQR?.id}`}
+                                                        className="text-sm font-medium hover:text-primary transition-colors cursor-pointer flex items-center gap-1"
+                                                    >
+                                                        {topQR?.name}
+                                                        <ArrowUpRight className="h-3 w-3 opacity-0 group-hover/qr:opacity-100 transition-opacity" />
+                                                    </Link>
+                                                    <span className="text-sm text-muted-foreground font-bold">{topQR?.totalScans} scans</span>
                                                 </div>
-                                                <div className="h-2 w-full rounded-full bg-muted">
-                                                    <div className="h-2 w-[80%] rounded-full bg-primary"></div>
+                                                <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                                                    <div
+                                                        className="h-full rounded-full bg-primary transition-all duration-500"
+                                                        style={{ width: `${Math.min((topQR?.totalScans / (dashboardData?.totalScans?.count || 1)) * 100, 100)}%` }}
+                                                    ></div>
                                                 </div>
                                             </div>
                                         </div>

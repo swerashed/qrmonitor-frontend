@@ -27,8 +27,8 @@ const navigation = [
   { name: "QR Codes", href: "/dashboard/qr-codes", icon: QrCode },
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Feature Request", href: "/contact", icon: Settings },
   { name: "Help", href: "/contact", icon: HelpCircle },
-  // { name: "Account", href: "/dashboard/account", icon: User },
 ]
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
@@ -67,20 +67,25 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 <span className="text-lg font-semibold">QrMonitor</span>
               </Link>
               <nav className="grid gap-2 px-2">
-                {navigation.map((item) => (
-                  <Button
-                    key={item.name}
-                    variant={pathname === item.href ? "default" : "ghost"}
-                    className={cn("justify-start", pathname === item.href && "bg-primary text-primary-foreground")}
-                    onClick={() => setIsMobileNavOpen(false)}
-                    asChild
-                  >
-                    <a href={item.href}>
-                      <item.icon className="mr-2 h-5 w-5" />
-                      {item.name}
-                    </a>
-                  </Button>
-                ))}
+                {navigation.map((item) => {
+                  const isActive = item.href === "/dashboard"
+                    ? pathname === "/dashboard"
+                    : pathname.startsWith(item.href);
+                  return (
+                    <Button
+                      key={item.name}
+                      variant={isActive ? "default" : "ghost"}
+                      className={cn("justify-start", isActive && "bg-primary text-primary-foreground")}
+                      onClick={() => setIsMobileNavOpen(false)}
+                      asChild
+                    >
+                      <a href={item.href}>
+                        <item.icon className="mr-2 h-5 w-5" />
+                        {item.name}
+                      </a>
+                    </Button>
+                  )
+                })}
               </nav>
             </div>
           </SheetContent>
@@ -120,22 +125,27 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
       <div className="flex flex-1">
-        <aside className="hidden w-64 shrink-0 border-r md:block">
+        <aside className="hidden w-64 shrink-0 border-r md:block sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto">
           <div className="flex h-full flex-col gap-2 p-4">
             <nav className="grid gap-1">
-              {navigation.map((item) => (
-                <Button
-                  key={item.name}
-                  variant={pathname === item.href ? "default" : "ghost"}
-                  className={cn("justify-start", pathname === item.href && "bg-primary text-primary-foreground")}
-                  asChild
-                >
-                  <a href={item.href}>
-                    <item.icon className="mr-2 h-5 w-5" />
-                    {item.name}
-                  </a>
-                </Button>
-              ))}
+              {navigation.map((item) => {
+                const isActive = item.href === "/dashboard"
+                  ? pathname === "/dashboard"
+                  : pathname.startsWith(item.href);
+                return (
+                  <Button
+                    key={item.name}
+                    variant={isActive ? "default" : "ghost"}
+                    className={cn("justify-start", isActive && "bg-primary text-primary-foreground")}
+                    asChild
+                  >
+                    <a href={item.href}>
+                      <item.icon className="mr-2 h-5 w-5" />
+                      {item.name}
+                    </a>
+                  </Button>
+                )
+              })}
             </nav>
           </div>
         </aside>

@@ -14,12 +14,12 @@ export const CreateQRCode = async (data: any) => {
   }
   try {
     const activeUserResponse = await getActiveUser()
-    if('statusCode' in activeUserResponse || !activeUserResponse?.userId) return
+    if ('statusCode' in activeUserResponse || !activeUserResponse?.userId) return
     const finalQRData = {
       ...data,
       creatorId: activeUserResponse?.userId as string
     }
-  
+
     const response = await app_axios.post(`/qr-code/create-qr`,
       finalQRData)
     return response.data
@@ -55,7 +55,7 @@ export const editQRCode = async (data: any) => {
 
     return response.data;
   } catch (error) {
-    return FormatErrorResponse(error)
+    throw FormatErrorResponse(error)
   }
 };
 
@@ -86,7 +86,7 @@ export const scanQRCode = async (data: any) => {
 
 
   try {
-    const response = await app_axios.post(`qr-code/track-scan`,{qrId, fingerprint}
+    const response = await app_axios.post(`qr-code/track-scan`, { qrId, fingerprint }
     );
 
     return response.data;

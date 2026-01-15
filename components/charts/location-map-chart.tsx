@@ -51,7 +51,7 @@ export function LocationMapChart({ data }: { data: LocationData[] }) {
   })
 
   return (
-    <div className="h-[200px] w-full">
+    <div className="h-full w-full">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie

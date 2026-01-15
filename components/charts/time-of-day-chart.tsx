@@ -5,7 +5,7 @@ import { Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } f
 import { ChartTooltip } from "@/components/ui/chart"
 
 
-export function TimeOfDayChart({data}:any) {
+export function TimeOfDayChart({ data }: any) {
   const renderLegend = () => (
     <div className="mt-4 flex justify-center text-xs text-muted-foreground uppercase">
       <div className="flex items-center gap-2">
@@ -15,7 +15,7 @@ export function TimeOfDayChart({data}:any) {
     </div>
   )
   return (
-    <div className="h-[200px] w-full">
+    <div className="h-full w-full">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}
@@ -28,7 +28,7 @@ export function TimeOfDayChart({data}:any) {
         >
           <XAxis
             dataKey="hour"
-            tickFormatter={(value) => `${value}:00`}
+            tickFormatter={(value) => value}
             stroke="#888888"
             fontSize={12}
             tickLine={false}
@@ -44,8 +44,10 @@ export function TimeOfDayChart({data}:any) {
           <Tooltip
             content={({ active, payload }) => {
               if (active && payload && payload.length) {
-                const hour = payload[0].payload.hour
-                const formattedHour = `${hour}:00 ${hour >= 12 ? "PM" : "AM"}`
+                const hourStr = payload[0].payload.hour
+                const [h, m] = hourStr.split(':')
+                const hourNum = parseInt(h)
+                const formattedHour = `${hourNum > 12 ? hourNum - 12 : (hourNum === 0 ? 12 : hourNum)}:${m} ${hourNum >= 12 ? "PM" : "AM"}`
 
                 return (
                   <ChartTooltip className="border-primary/10 bg-background">

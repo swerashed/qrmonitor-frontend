@@ -1,6 +1,6 @@
-import QrCodeDetailsPage from "@/components/pages/dashboard-qr-details-page";
 import { getSingleQRCode } from "@/services/QRCodeServices";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import QrCodeDetailsPage from "@/components/pages/dashboard-qr-details-page";
 
 export default async function SingleQrCodeDetailsPage({ params }: any) {
   const id = (await params).id

@@ -1,13 +1,9 @@
 "use client"
 
 import { Area, AreaChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
-
 import { ChartTooltip } from "@/components/ui/chart"
-import { CardContent } from "../ui/card"
-
 
 export function ScansOverTimeChart({ data }: any) {
-
   if (!Array.isArray(data) || data.length === 0) {
     return (
       <div className="h-[200px] w-full flex items-center justify-center text-sm text-muted-foreground">
@@ -15,7 +11,6 @@ export function ScansOverTimeChart({ data }: any) {
       </div>
     )
   }
-  
 
   const renderLegend = () => (
     <div className="mt-4 flex justify-center text-xs text-muted-foreground uppercase pb-5">
@@ -26,10 +21,8 @@ export function ScansOverTimeChart({ data }: any) {
     </div>
   )
 
-
   return (
-    <CardContent className="flex justify-center items-center h-full">
-    <div className="h-[200px] w-full">
+    <div className="h-full w-full">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={data}
@@ -99,13 +92,9 @@ export function ScansOverTimeChart({ data }: any) {
             fillOpacity={1}
             fill="url(#colorScans)"
           />
-
           <Legend content={renderLegend} />
-
         </AreaChart>
       </ResponsiveContainer>
     </div>
-    </CardContent>
-
   )
 }
