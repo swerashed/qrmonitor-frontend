@@ -20,7 +20,7 @@ import { getSingleQRCode } from "@/services/QRCodeServices";
 export default function DashboardQRAnalyticsPage() {
     const params = useParams();
     const router = useRouter();
-    const qrCodeId = params.id as string;
+    const qrCodeId = (params.id || params.slug) as string;
 
     const { data: response, isLoading, error } = useQuery({
         queryKey: ['getSingleQRCode', qrCodeId],

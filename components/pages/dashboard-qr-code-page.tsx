@@ -213,7 +213,7 @@ export default function DashboardQrCodesPage() {
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => router.push(`/dashboard/qr-codes/${qr.id}`)} className="cursor-pointer">
                               <BarChart3 className="mr-2 h-4 w-4" />
-                              View Analytics
+                              View Details
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleDownload(qr)} className="cursor-pointer">
                               <Download className="mr-2 h-4 w-4" />

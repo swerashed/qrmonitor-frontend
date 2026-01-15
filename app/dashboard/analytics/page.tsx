@@ -328,7 +328,7 @@ export default async function AnalyticsPage() {
                         <div className="text-3xl font-extrabold text-primary">{qr.totalScans.toLocaleString()}</div>
                         <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Total Scans</div>
                       </div>
-                      <Link href={`/dashboard/qr-codes/${qr.id}`} className="w-full">
+                      <Link href={`/dashboard/analytics/${qr.id}`} className="w-full">
                         <Button variant="outline" size="sm" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-all flex items-center justify-center gap-2">
                           View Analytics
                           <ArrowUpRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />

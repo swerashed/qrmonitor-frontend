@@ -189,7 +189,7 @@ export default function DashboardQRDetailsPage() {
               <p className="text-sm text-muted-foreground">Snapshot of this QR code's performance</p>
             </div>
             <Button asChild className="rounded-full shadow-lg shadow-primary/20">
-              <a href={`/dashboard/qr-codes/${qrCodeId}/analytics`}>
+              <a href={`/dashboard/analytics/${qrCodeId}`}>
                 <Activity className="mr-2 h-4 w-4" />
                 View Full Analytics
               </a>
@@ -245,7 +245,7 @@ export default function DashboardQRDetailsPage() {
                 Deep-dive into scan patterns, geographic heatmaps, and device distribution in the dedicated analytics view.
               </p>
               <Button variant="outline" asChild className="rounded-full">
-                <a href={`/dashboard/qr-codes/${qrCodeId}/analytics`}>
+                <a href={`/dashboard/analytics/${qrCodeId}`}>
                   Go to Analytics Dashboard
                 </a>
               </Button>
