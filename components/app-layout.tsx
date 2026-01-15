@@ -27,8 +27,8 @@ const navigation = [
   { name: "QR Codes", href: "/dashboard/qr-codes", icon: QrCode },
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Feature Request", href: "/contact", icon: Settings },
   { name: "Help", href: "/contact", icon: HelpCircle },
-  // { name: "Account", href: "/dashboard/account", icon: User },
 ]
 
 export function AppLayout({ children }: { children: React.ReactNode }) {

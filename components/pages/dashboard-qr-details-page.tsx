@@ -149,12 +149,12 @@ export default function DashboardQRDetailsPage() {
       <div className="grid gap-6 lg:grid-cols-[350px_1fr]">
         {/* Left Sidebar - QR Preview & Links */}
         <div className="space-y-6">
-          <Card className="overflow-hidden border-none shadow-md bg-gradient-to-b from-primary/5 to-card sticky top-6">
+          <Card className="overflow-hidden border-none shadow-md bg-primary/10 sticky top-6">
             <CardHeader className="text-center pb-2">
               <CardTitle className="text-lg">Final QR Code</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col items-center gap-6 pt-2">
-              <div className="group relative bg-white p-4 rounded-2xl shadow-xl transition-all hover:scale-[1.02]">
+              <div className="group relative bg-white p-[40px] rounded-2xl shadow-xl transition-all hover:scale-[1.02]">
                 <div ref={qrRef} className="flex items-center justify-center" />
               </div>
 
@@ -208,42 +208,44 @@ export default function DashboardQRDetailsPage() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <Card className="bg-primary/5 border-primary/20 shadow-sm transition-all hover:shadow-md">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-primary">Total Scans</CardTitle>
-                  <MousePointer2 className="h-4 w-4 text-primary opacity-70" />
+            <Card className="bg-card border shadow-sm hover:shadow-md transition-shadow">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Scans</CardTitle>
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <MousePointer2 className="h-4 w-4 text-primary" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-extrabold tracking-tight">{(response?.data?.totalScans || 0).toLocaleString()}</div>
+                <div className="text-3xl font-bold">{(response?.data?.totalScans || 0).toLocaleString()}</div>
                 <p className="text-xs text-muted-foreground mt-2 border-t pt-2 border-primary/10">
                   Updated <span className="font-medium text-foreground">{qrCode?.updatedAt ? format(new Date(qrCode.updatedAt), "HH:mm a") : "Recently"}</span>
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-emerald-50 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900/40 shadow-sm transition-all hover:shadow-md">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">Unique Users</CardTitle>
-                  <User className="h-4 w-4 text-emerald-600 dark:text-emerald-400 opacity-70" />
+            <Card className="bg-card border shadow-sm hover:shadow-md transition-shadow">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Unique Users</CardTitle>
+                <div className="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                  <User className="h-4 w-4 text-blue-500" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-extrabold tracking-tight">{(qrCode?.uniqueScans || 0).toLocaleString()}</div>
+                <div className="text-3xl font-bold">{(qrCode?.uniqueScans || 0).toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground mt-1">Direct individual reach</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-blue-50 dark:bg-blue-950/20 border-blue-100 dark:border-blue-900/40 shadow-sm transition-all hover:shadow-md">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-blue-600 dark:text-blue-400">Locations</CardTitle>
-                  <Globe className="h-4 w-4 text-blue-600 dark:text-blue-400 opacity-70" />
+            <Card className="bg-card border shadow-sm hover:shadow-md transition-shadow">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Locations</CardTitle>
+                <div className="h-8 w-8 rounded-full bg-orange-500/10 flex items-center justify-center">
+                  <Globe className="h-4 w-4 text-orange-500" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-extrabold tracking-tight">{scansByLocation?.length || 0}</div>
+                <div className="text-3xl font-bold">{scansByLocation?.length || 0}</div>
+                <p className="text-xs text-muted-foreground mt-1">Global geographic spread</p>
               </CardContent>
             </Card>
           </div>
