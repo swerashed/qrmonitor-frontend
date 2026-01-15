@@ -24,7 +24,7 @@ export const CreateQRCode = async (data: any) => {
       finalQRData)
     return response.data
   } catch (error) {
-    return FormatErrorResponse(error)
+    throw FormatErrorResponse(error)
   }
 }
 
@@ -91,7 +91,7 @@ export const scanQRCode = async (data: any) => {
 
     return response.data;
   } catch (error) {
-    return FormatErrorResponse(error)
+    throw FormatErrorResponse(error)
   }
 }
 
