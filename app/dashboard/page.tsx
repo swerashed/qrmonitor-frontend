@@ -1,9 +1,9 @@
-import dynamic from "next/dynamic";
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from '@tanstack/react-query'
+import { redirect } from 'next/navigation'
 import DashboardMainPage from "@/components/pages/dashboard-main-page";
 import { getDashboardStats } from "@/services/QRCodeServices";
 
@@ -11,10 +11,14 @@ import { getDashboardStats } from "@/services/QRCodeServices";
 export default async function DashboardPage() {
   const queryClient = new QueryClient()
 
-  await queryClient.prefetchQuery({
+  const stats = await queryClient.fetchQuery({
     queryKey: ['getDashboardStats'],
     queryFn: getDashboardStats,
   })
+
+  if (stats?.data?.totalQRCodes?.count === 0) {
+    redirect('/dashboard/qr-codes')
+  }
 
 
   return (

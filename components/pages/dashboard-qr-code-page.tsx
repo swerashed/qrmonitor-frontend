@@ -241,8 +241,8 @@ export default function DashboardQrCodesPage() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={7} className="h-64 text-center">
-                      <div className="flex flex-col items-center justify-center gap-3">
+                    <TableCell colSpan={7} className="h-64 text-center ">
+                      <div className={`flex flex-col items-center justify-center gap-3 ${!searchQuery && "min-h-[60vh]"}`}>
                         <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
                           <QrCode className="h-6 w-6 text-muted-foreground opacity-50" />
                         </div>

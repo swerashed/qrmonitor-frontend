@@ -3,9 +3,8 @@ import type { Metadata } from "next"
 import { AppLayout } from "@/components/app-layout"
 
 export const metadata: Metadata = {
-  title: "QR Code Generator & Analytics Platform",
+  title: "QR Monitor | QR Code Generator & Analytics Platform",
   description: "Generate dynamic QR codes and track their performance",
-    generator: 'v0.dev'
 }
 
 export default function DashboardLayout({
@@ -15,9 +14,9 @@ export default function DashboardLayout({
 }) {
   return (
     <div >
-        <AppLayout>
-            {children}
-        </AppLayout>
+      <AppLayout>
+        {children}
+      </AppLayout>
 
     </div>
   )
