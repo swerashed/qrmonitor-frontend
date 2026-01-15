@@ -88,7 +88,12 @@ export default function CreateQRCodePage() {
     const handleSubmit = async (e?: React.FormEvent) => {
         e?.preventDefault()
 
-        if (!validateUrl(url)) {
+        let finalUrl = url.trim()
+        if (finalUrl && !/^https?:\/\//i.test(finalUrl)) {
+            finalUrl = `https://${finalUrl}`
+        }
+
+        if (!validateUrl(finalUrl)) {
             toast.error("Invalid URL", {
                 description: "Please enter a valid URL to generate a QR code.",
             })
@@ -106,7 +111,7 @@ export default function CreateQRCodePage() {
             id: qrCodeId!,
             name,
             description,
-            targetUrl: url,
+            targetUrl: finalUrl,
             trackingEnabled,
             settings: qrCodeOptions,
         }
@@ -115,7 +120,12 @@ export default function CreateQRCodePage() {
     }
 
     const handleDownload = () => {
-        if (!validateUrl(url)) {
+        let finalUrl = url.trim()
+        if (finalUrl && !/^https?:\/\//i.test(finalUrl)) {
+            finalUrl = `https://${finalUrl}`
+        }
+
+        if (!validateUrl(finalUrl)) {
             toast.error("Cannot download", {
                 description: "Please enter a valid URL first.",
             })
