@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import {
   dehydrate,
   HydrationBoundary,
@@ -11,13 +12,17 @@ import { getDashboardStats } from "@/services/QRCodeServices";
 export default async function DashboardPage() {
   const queryClient = new QueryClient()
 
-  const stats = await queryClient.fetchQuery({
-    queryKey: ['getDashboardStats'],
-    queryFn: getDashboardStats,
-  })
+  try {
+    const stats = await queryClient.fetchQuery({
+      queryKey: ['getDashboardStats'],
+      queryFn: getDashboardStats,
+    })
 
-  if (stats?.data?.totalQRCodes?.count === 0) {
-    redirect('/dashboard/qr-codes')
+    if (stats?.data?.totalQRCodes?.count === 0) {
+      redirect('/dashboard/qr-codes')
+    }
+  } catch (error) {
+    console.error("Error fetching dashboard stats:", error)
   }
 
 
