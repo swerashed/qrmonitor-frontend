@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
-import { getQRCodeScanSettings, scanQRCode } from '@/services/QRCodeServices';
+import { Loader2 } from 'lucide-react';
+import { getQRCodeScanSettings } from '@/services/QRCodeServices';
 import { scanQRCodeClient } from '@/hooks/scanQRCodeClient';
 
 type Props = {
@@ -10,18 +11,14 @@ type Props = {
 };
 
 const ScanClient = ({ qrId }: Props) => {
-  const [status, setStatus] = useState('Preparing scan...');
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const track = async () => {
       try {
-        setStatus('Redirecting...');
-
         // Load FingerprintJS and start both operations in parallel
         const fpPromise = FingerprintJS.load();
         const settingsPromise = getQRCodeScanSettings(qrId);
-
-        setStatus('Redirecting...');
 
         // Await both together
         const [fpInstance, settings] = await Promise.all([fpPromise, settingsPromise]);
@@ -30,23 +27,19 @@ const ScanClient = ({ qrId }: Props) => {
         const targetUrl = settings?.data?.qrCode?.targetUrl;
 
         if (!targetUrl) {
-          setStatus('No target URL found.');
+          setError('No target URL found.');
           return;
         }
 
-        setStatus('Redirecting...');
         const scanRes = await scanQRCodeClient({ qrId, fingerprint });
 
         if (scanRes?.success) {
-          setStatus('Redirecting...');
-          setTimeout(() => {
-            window.location.href = targetUrl;
-          }, 300); // Small delay for UX
+          window.location.href = targetUrl;
         } else {
-          setStatus('Scan failed.');
+          setError('Scan failed.');
         }
       } catch (err) {
-        setStatus('Error during scan.');
+        setError('Error during scan.');
       }
     };
 
@@ -54,9 +47,23 @@ const ScanClient = ({ qrId }: Props) => {
   }, [qrId]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
-      <h1 className="text-xl font-bold">QR Scan In Progress</h1>
-      <p className="mt-2 animate-pulse">{status}</p>
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center bg-background">
+      <div className="flex flex-col items-center gap-4 animate-in fade-in duration-500">
+        {error ? (
+          <div className="space-y-2">
+            <h1 className="text-xl font-semibold text-destructive">Oops!</h1>
+            <p className="text-muted-foreground">{error}</p>
+          </div>
+        ) : (
+          <div className="relative flex items-center justify-center h-24 w-24">
+            {/* Smooth CSS Spinner */}
+            <div className="h-12 w-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+
+            {/* Ambient Glow */}
+            <div className="absolute inset-0 blur-2xl bg-primary/10 animate-pulse rounded-full" />
+          </div>
+        )}
+      </div>
     </div>
   );
 };
