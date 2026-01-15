@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
-import { getSingleQRCode } from "@/services/QRCodeServices";
+import { getSingleQRCode, deleteQrCode } from "@/services/QRCodeServices";
 import { EditQRCodeModal } from "@/components/edit-qr-code-modal";
 import { toast } from "sonner";
 
@@ -51,13 +51,21 @@ export default function DashboardQRDetailsPage() {
   // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      // Implement delete API call here
-      toast.error("Delete functionality not yet implemented");
+      return await deleteQrCode(id);
     },
-    onSuccess: () => {
-      toast.success("QR Code deleted successfully");
-      router.push("/dashboard/qr-codes");
+    onSuccess: (response) => {
+      if (response.success) {
+        toast.success("QR Code deleted successfully");
+        router.push("/dashboard/qr-codes");
+      } else {
+        toast.error(response.message || "Failed to delete QR Code");
+      }
     },
+    onError: (err: any) => {
+      toast.error("Delete failed!", {
+        description: err.message || "An unexpected error occurred",
+      });
+    }
   });
 
   const refetch = () => {

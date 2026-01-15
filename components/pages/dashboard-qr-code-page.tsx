@@ -60,6 +60,7 @@ export default function DashboardQrCodesPage() {
   const handleDownload = (qr: any) => {
     const qrCode = new QRCodeStyling(qr.settings)
     qrCode.download({
+      name: qr.name || "qr-code",
       extension: "png"
     });
   }
