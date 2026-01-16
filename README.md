@@ -68,11 +68,15 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ----------
 
 ### 📁 Versioning
-Current Version: **1.0.0**
+Current Version: **1.0.1**
 
 ----------
 
 ### 📝 Changelog
+ 
+#### [1.0.1] - 2026-01-16
+- **Fixed:** Visibility issue of dashboard charts (Device Breakdown and Scan Locations) by setting explicit container heights.
+- **Removed:** Download button from the QR creation page for a cleaner interface.
 
 #### [1.0.0] - 2026-01-16
 - **Initial Release:** Official 1.0.0 release.
