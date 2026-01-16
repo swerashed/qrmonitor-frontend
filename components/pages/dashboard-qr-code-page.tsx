@@ -26,6 +26,7 @@ import QRCodeDashboardLoading from "@/app/dashboard/qr-codes/loading"
 import { useQuery } from "@tanstack/react-query"
 import { EditQRCodeModal } from "@/components/edit-qr-code-modal"
 import { DeleteQRCodeConfirmationModal } from "@/components/delete-qr-confirmation-modal"
+import { handleQRDownload } from "@/helpers/handleQRDownload"
 
 export default function DashboardQrCodesPage() {
   const router = useRouter()
@@ -60,12 +61,8 @@ export default function DashboardQrCodesPage() {
     qr?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase())
   )
 
-  const handleDownload = (qr: any) => {
-    const qrCode = new QRCodeStyling(qr.settings)
-    qrCode.download({
-      name: qr.name || "qr-code",
-      extension: "png"
-    });
+  const handleDownload = (qr: any, extension: "png" | "svg" = "png") => {
+    handleQRDownload(qr.settings, qr.name || "qr-code", extension)
   }
 
   const handleDeleteQr = async (id: string) => {
@@ -219,9 +216,13 @@ export default function DashboardQrCodesPage() {
                               <BarChart3 className="mr-2 h-4 w-4" />
                               View Details
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleDownload(qr)} className="cursor-pointer">
+                            <DropdownMenuItem onClick={() => handleDownload(qr, "png")} className="cursor-pointer">
                               <Download className="mr-2 h-4 w-4" />
                               Download PNG
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleDownload(qr, "svg")} className="cursor-pointer">
+                              <Download className="mr-2 h-4 w-4" />
+                              Download SVG
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem

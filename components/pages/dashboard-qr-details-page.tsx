@@ -18,6 +18,13 @@ import { getSingleQRCode, deleteQrCode } from "@/services/QRCodeServices";
 import { EditQRCodeModal } from "@/components/edit-qr-code-modal";
 import { DeleteQRCodeConfirmationModal } from "@/components/delete-qr-confirmation-modal";
 import { toast } from "sonner";
+import { handleQRDownload } from "@/helpers/handleQRDownload";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function DashboardQRDetailsPage() {
   const params = useParams();
@@ -104,9 +111,9 @@ export default function DashboardQRDetailsPage() {
   const scansByLocation = response?.data?.scanByLocation || [];
 
 
-  const handleDownload = () => {
-    if (qrCodeInstance) {
-      qrCodeInstance.download({ name: qrCode.name || "qr-code", extension: "png" });
+  const handleDownload = (extension: "png" | "svg" = "png") => {
+    if (qrCode) {
+      handleQRDownload(qrCode.settings, qrCode.name || "qr-code", extension);
     }
   }
 
@@ -134,10 +141,22 @@ export default function DashboardQRDetailsPage() {
             <Edit2 className="mr-2 h-4 w-4" />
             Edit QR
           </Button>
-          <Button onClick={handleDownload} variant="outline" size="sm" className="rounded-lg">
-            <Download className="mr-2 h-4 w-4" />
-            Download
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="rounded-lg">
+                <Download className="mr-2 h-4 w-4" />
+                Download
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => handleDownload("png")}>
+                Download PNG
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleDownload("svg")}>
+                Download SVG
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <Button variant="destructive" size="sm" className="rounded-lg shadow-sm" onClick={() => setIsDeleteModalOpen(true)}>
             <Trash2 className="mr-2 h-4 w-4" />

@@ -1,13 +1,18 @@
-import QRCodeStyling from "qr-code-styling";
+import QRCodeStyling, { FileExtension } from "qr-code-styling";
 import { ensureDynamicQrUrl } from "./ensureDynamicQrUrl";
 import { getBaseUrl } from "./getBaseUrl";
 
-export const handleQRDownload = async (options: any, height: number, width: number) => {
-
+export const handleQRDownload = async (
+  options: any,
+  name: string = "qr-code",
+  extension: FileExtension = "png",
+  height: number = 1000,
+  width: number = 1000
+) => {
   const modifiedSettings = {
     ...options,
-    width: width || 1000,
-    height: height || 1000,
+    width: width,
+    height: height,
   };
 
   if (modifiedSettings.data) {
@@ -17,7 +22,8 @@ export const handleQRDownload = async (options: any, height: number, width: numb
 
   const downloadAbleQrCode = new QRCodeStyling(modifiedSettings);
 
-  downloadAbleQrCode.download({
-    extension: "png"
+  await downloadAbleQrCode.download({
+    name: name,
+    extension: extension,
   });
-}
+};

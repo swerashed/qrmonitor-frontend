@@ -13,7 +13,7 @@ export default async function Page() {
       if (statsResponse?.success) {
         const qrCount = statsResponse?.data?.totalQRCodes?.count;
         if (qrCount === 0) {
-          redirect("/dashboard/qr-codes/create");
+          redirect("/dashboard/qr-codes");
         } else {
           redirect("/dashboard");
         }
