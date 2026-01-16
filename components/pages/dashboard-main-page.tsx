@@ -35,7 +35,7 @@ const DashboardMainPage = () => {
 
     const dashboardData = data?.data
 
-
+    console.log(dashboardData)
 
     if (isSuccess) return (
         <div className="flex flex-col gap-4 p-4 md:gap-8 md:p-8">
@@ -84,11 +84,7 @@ const DashboardMainPage = () => {
 
 
                     </Card>
-                    {/* <Card className="flex justify-center items-center">
-          <CardContent>
-          </CardContent>
-        </Card> */}
-                    {/* <ActivityChart data={dashboardData?.scanActivity} /> */}
+
                 </div>
                 <Card className="lg:col-span-3">
                     <CardHeader>
@@ -190,7 +186,7 @@ const DashboardMainPage = () => {
                         <CardTitle className="text-sm font-medium">Device Breakdown</CardTitle>
                         <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="h-[300px]">
                         <DeviceBreakdownChart data={dashboardData?.scanByDevice} />
                     </CardContent>
                 </Card>
@@ -199,7 +195,7 @@ const DashboardMainPage = () => {
                         <CardTitle className="text-sm font-medium">Scan Locations</CardTitle>
                         <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="h-[300px]">
                         <LocationMapChart data={dashboardData?.scanByLocation} />
                     </CardContent>
                 </Card>
