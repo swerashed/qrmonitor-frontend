@@ -16,7 +16,6 @@ import { DEFAULT_QR_OPTIONS } from "@/lib/qr-code-defaults"
 import { CreateQRCode } from "@/services/QRCodeServices"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
-import QRCodeStyling from "qr-code-styling"
 import { getBaseUrl } from "@/helpers/getBaseUrl"
 import { cn } from "@/lib/utils"
 
@@ -119,25 +118,6 @@ export default function CreateQRCodePage() {
         mutate(data)
     }
 
-    const handleDownload = () => {
-        let finalUrl = url.trim()
-        if (finalUrl && !/^https?:\/\//i.test(finalUrl)) {
-            finalUrl = `https://${finalUrl}`
-        }
-
-        if (!validateUrl(finalUrl)) {
-            toast.error("Cannot download", {
-                description: "Please enter a valid URL first.",
-            })
-            return
-        }
-
-        const qrCode = new QRCodeStyling(qrCodeOptions)
-        qrCode.download({
-            extension: "png",
-            name: name || "qr-code",
-        })
-    }
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -301,16 +281,7 @@ export default function CreateQRCodePage() {
                                         <p className="text-xs text-primary font-medium truncate max-w-full px-8">{url || "Enter URL above"}</p>
                                     </div>
 
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        className="w-full h-11 rounded-xl shadow-sm border-primary/20 hover:bg-primary/5 hover:text-primary transition-all group"
-                                        onClick={handleDownload}
-                                        disabled={!url || !!urlError}
-                                    >
-                                        <Download className="mr-2 h-4 w-4 transition-transform group-hover:translate-y-0.5" />
-                                        Download PNG
-                                    </Button>
+
 
                                     {qrCodeId && (
                                         <div className="p-3.5 rounded-xl bg-muted/40 border border-border/50 space-y-2">
